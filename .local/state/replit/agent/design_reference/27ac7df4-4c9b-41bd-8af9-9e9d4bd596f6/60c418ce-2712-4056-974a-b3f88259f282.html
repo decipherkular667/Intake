@@ -1,0 +1,696 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntakeAI - Smart Health & Nutrition Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    'inter': ['Inter', 'sans-serif'],
+                },
+                colors: {
+                    'primary': '#2E7D32',
+                    'secondary': '#1976D2', 
+                    'accent': '#FF9800',
+                    'error': '#D32F2F',
+                    'success': '#4CAF50',
+                    'warning': '#FF9800',
+                    'surface': '#FFFFFF',
+                    'background': '#FAFAFA'
+                },
+                spacing: {
+                    '18': '4.5rem',
+                    '88': '22rem'
+                }
+            }
+        }
+    };
+    </script>
+</head>
+<body class="font-inter bg-background min-h-screen pb-20">
+    <!-- @COMPONENT: AppShell -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative">
+        
+        <!-- @COMPONENT: TopBar -->
+        <header class="bg-primary text-white p-4 sticky top-0 z-40">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                        <i class="fas fa-heartbeat text-primary text-lg"></i>
+                    </div>
+                    <h1 class="text-xl font-semibold">IntakeAI</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-bell text-white opacity-80"></i>
+                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- @COMPONENT: MainContent with Page Router -->
+        <main class="pb-4" id="main-content">
+            
+            <!-- @PAGE: Health Survey (Default View) -->
+            <div id="health-page" class="page-content">
+                <!-- Welcome Section -->
+                <div class="bg-gradient-to-r from-primary to-green-600 text-white p-6 mx-4 mt-4 rounded-xl">
+                    <h2 class="text-xl font-semibold mb-2">Complete Your Health Profile</h2>
+                    <p class="text-green-100 text-sm">Help us provide personalized nutrition insights</p>
+                    <div class="mt-4 bg-white/20 rounded-lg p-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span>Profile Completion</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2 mt-2">
+                            <div class="bg-white h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Survey Form -->
+                <div class="px-4 mt-6 space-y-6">
+                    
+                    <!-- Personal Information Card -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-user-circle text-primary mr-2"></i>
+                            Personal Information
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Enter your full name" data-bind="user.name">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                                    <input type="number" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="170" data-bind="user.height">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
+                                    <input type="number" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="70" data-bind="user.weight">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Birth Year</label>
+                                    <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-bind="user.birthYear">
+                                        <option>1995</option>
+                                        <option>1990</option>
+                                        <option>1985</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Birth Month</label>
+                                    <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-bind="user.birthMonth">
+                                        <option>January</option>
+                                        <option>February</option>
+                                        <option>March</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical Conditions Card -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-stethoscope text-primary mr-2"></i>
+                            Medical Conditions
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Search & Add Conditions</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Type condition (e.g., diabetes, hypertension)" data-implementation="Autocomplete with medical conditions database">
+                                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary">
+                                        <i class="fas fa-plus-circle text-xl"></i>
+                                    </button>
+                                </div>
+                                <!-- @FUNCTIONALITY: Autocomplete dropdown should appear here with common conditions -->
+                            </div>
+                            
+                            <!-- Selected Conditions -->
+                            <div class="flex flex-wrap gap-2" data-mock="true">
+                                <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center">
+                                    Type 2 Diabetes
+                                    <i class="fas fa-times ml-2 cursor-pointer"></i>
+                                </span>
+                                <span class="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm flex items-center">
+                                    High Blood Pressure
+                                    <i class="fas fa-times ml-2 cursor-pointer"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Allergies Card -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
+                            Food Allergies
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Add Allergies</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Type allergy (e.g., nuts, dairy, shellfish)">
+                                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-warning">
+                                        <i class="fas fa-plus-circle text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Allergies -->
+                            <div class="flex flex-wrap gap-2" data-mock="true">
+                                <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-exclamation-triangle mr-1 text-xs"></i>
+                                    Tree Nuts
+                                    <i class="fas fa-times ml-2 cursor-pointer"></i>
+                                </span>
+                                <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-exclamation-triangle mr-1 text-xs"></i>
+                                    Shellfish
+                                    <i class="fas fa-times ml-2 cursor-pointer"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medications Card -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-pills text-secondary mr-2"></i>
+                            Current Medications
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Add Medication</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Enter medication name">
+                                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary">
+                                        <i class="fas fa-plus-circle text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Medications -->
+                            <div class="space-y-2" data-mock="true">
+                                <div class="bg-blue-50 p-3 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <span class="text-blue-700 font-medium">Metformin</span>
+                                        <p class="text-blue-600 text-sm">500mg - Twice daily</p>
+                                    </div>
+                                    <i class="fas fa-times text-blue-700 cursor-pointer"></i>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <span class="text-blue-700 font-medium">Lisinopril</span>
+                                        <p class="text-blue-600 text-sm">10mg - Once daily</p>
+                                    </div>
+                                    <i class="fas fa-times text-blue-700 cursor-pointer"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smoking Habits Card -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-smoking text-gray-600 mr-2"></i>
+                            Smoking Habits
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Do you smoke?</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="px-4 py-3 border-2 border-green-200 bg-green-50 text-green-700 rounded-lg text-sm font-medium" data-selected="true">Never</button>
+                                    <button class="px-4 py-3 border-2 border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:border-gray-300">Former</button>
+                                    <button class="px-4 py-3 border-2 border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:border-gray-300">Current</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <button class="w-full bg-primary text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:bg-green-700 transition-colors" data-event="click:saveHealthProfile">
+                        Save Health Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- @PAGE: Food Diary -->
+            <div id="diary-page" class="page-content hidden">
+                <!-- Quick Stats -->
+                <div class="bg-gradient-to-r from-secondary to-blue-600 text-white p-6 mx-4 mt-4 rounded-xl">
+                    <h2 class="text-xl font-semibold mb-2">Today's Nutrition</h2>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="dailyStats.calories">1,847</div>
+                            <div class="text-blue-100 text-sm">Calories</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="dailyStats.protein">87g</div>
+                            <div class="text-blue-100 text-sm">Protein</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="dailyStats.carbs">203g</div>
+                            <div class="text-blue-100 text-sm">Carbs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Food Section -->
+                <div class="px-4 mt-6">
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-plus-circle text-primary mr-2"></i>
+                            Add Food Item
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Search Food</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Type food item (e.g., banana, chicken breast)" data-implementation="Search USDA/FoodDB API with autocomplete">
+                                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary">
+                                        <i class="fas fa-search text-lg"></i>
+                                    </button>
+                                </div>
+                                <!-- @FUNCTIONALITY: Food search results dropdown with nutrition previews -->
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Serving Size</label>
+                                    <input type="number" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="1" step="0.1">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                                    <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                        <option>piece</option>
+                                        <option>cup</option>
+                                        <option>gram</option>
+                                        <option>ounce</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors" data-event="click:addFoodItem">
+                                Add to Diary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Meals -->
+                <div class="px-4 mt-6 space-y-4">
+                    <!-- @MAP: meals.map(meal => ( -->
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                                <i class="fas fa-utensils text-orange-500 mr-2"></i>
+                                <span data-bind="meal.name">Breakfast</span>
+                            </h3>
+                            <div class="text-sm text-gray-500" data-bind="meal.calories">324 cal</div>
+                        </div>
+                        
+                        <!-- Food Items -->
+                        <div class="space-y-3" data-mock="true">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <!-- Healthy breakfast scene with oatmeal, berries and nuts on wooden table -->
+                                    <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=80&h=80" alt="Oatmeal with berries" class="w-12 h-12 rounded-lg object-cover">
+                                    <div>
+                                        <div class="font-medium text-gray-900">Oatmeal with Berries</div>
+                                        <div class="text-sm text-gray-500">1 cup</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-right">
+                                        <div class="font-medium text-gray-900">245 cal</div>
+                                        <div class="text-xs text-gray-500">8g protein</div>
+                                    </div>
+                                    <button class="text-primary p-1" data-event="click:viewNutrientInfo">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <!-- Fresh banana on clean white background for healthy eating -->
+                                    <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=80&h=80" alt="Fresh banana" class="w-12 h-12 rounded-lg object-cover">
+                                    <div>
+                                        <div class="font-medium text-gray-900">Banana</div>
+                                        <div class="text-sm text-gray-500">1 medium</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-right">
+                                        <div class="font-medium text-gray-900">105 cal</div>
+                                        <div class="text-xs text-gray-500">1g protein</div>
+                                    </div>
+                                    <button class="text-primary p-1" data-event="click:viewNutrientInfo">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Macro Breakdown -->
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <div class="text-sm text-gray-600">Carbs</div>
+                                    <div class="font-semibold text-blue-700" data-bind="meal.macros.carbs">68g</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600">Protein</div>
+                                    <div class="font-semibold text-green-700" data-bind="meal.macros.protein">12g</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600">Fat</div>
+                                    <div class="font-semibold text-orange-700" data-bind="meal.macros.fat">4g</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+
+            <!-- @PAGE: Insights -->
+            <div id="insights-page" class="page-content hidden">
+                <!-- Health Status Overview -->
+                <div class="px-4 mt-4">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-check-circle text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-semibold">Health Status: Safe</h2>
+                                <p class="text-green-100 text-sm">No critical conflicts detected</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/20 rounded-lg p-3 mt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span>Overall Health Score</span>
+                                <span class="font-semibold">8.2/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conflict Detection -->
+                <div class="px-4 mt-6">
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-shield-alt text-primary mr-2"></i>
+                            Conflict Detection
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <!-- Safe Items -->
+                            <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                    <span class="font-medium text-green-800">✅ Safe Foods Today</span>
+                                </div>
+                                <p class="text-green-700 text-sm mt-1">Oatmeal, Banana, Chicken Breast - No allergies or conflicts detected</p>
+                            </div>
+                            
+                            <!-- Warning Items -->
+                            <div class="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400" data-mock="true">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                                    <span class="font-medium text-yellow-800">⚠ Caution Required</span>
+                                </div>
+                                <p class="text-yellow-700 text-sm mt-1">High sodium intake detected - May affect blood pressure medication</p>
+                            </div>
+                            
+                            <!-- Critical Items -->
+                            <div class="p-4 bg-red-50 rounded-lg border-l-4 border-red-400" data-mock="true">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-times-circle text-red-600"></i>
+                                    <span class="font-medium text-red-800">❌ Avoid</span>
+                                </div>
+                                <p class="text-red-700 text-sm mt-1">Nuts detected - Conflicts with tree nut allergy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Summary -->
+                <div class="px-4 mt-6">
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-chart-line text-secondary mr-2"></i>
+                            Weekly Summary
+                        </h3>
+                        
+                        <!-- Calorie Chart -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm font-medium text-gray-700">Daily Calories</span>
+                                <span class="text-sm text-gray-500">Target: 2000</span>
+                            </div>
+                            <div class="space-y-2">
+                                <!-- @MAP: weeklyData.map(day => ( -->
+                                <div class="flex items-center space-x-3" data-mock="true">
+                                    <span class="text-sm text-gray-600 w-12">Mon</span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-3">
+                                        <div class="bg-primary h-3 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800 w-16">1,847</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-sm text-gray-600 w-12">Tue</span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-3">
+                                        <div class="bg-primary h-3 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800 w-16">1,923</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-sm text-gray-600 w-12">Wed</span>
+                                    <div class="flex-1 bg-gray-100 rounded-full h-3">
+                                        <div class="bg-warning h-3 rounded-full" style="width: 105%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800 w-16">2,156</span>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+
+                        <!-- Macro Distribution -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center p-3 bg-blue-50 rounded-lg">
+                                <div class="text-2xl font-bold text-blue-700" data-bind="weeklyMacros.carbs">45%</div>
+                                <div class="text-sm text-blue-600">Carbs</div>
+                            </div>
+                            <div class="text-center p-3 bg-green-50 rounded-lg">
+                                <div class="text-2xl font-bold text-green-700" data-bind="weeklyMacros.protein">25%</div>
+                                <div class="text-sm text-green-600">Protein</div>
+                            </div>
+                            <div class="text-center p-3 bg-orange-50 rounded-lg">
+                                <div class="text-2xl font-bold text-orange-700" data-bind="weeklyMacros.fat">30%</div>
+                                <div class="text-sm text-orange-600">Fat</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Recommendations -->
+                <div class="px-4 mt-6 mb-6">
+                    <div class="bg-surface rounded-xl p-5 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-brain text-purple-600 mr-2"></i>
+                            AI Recommendations
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Diet Suggestions -->
+                            <div class="p-4 bg-purple-50 rounded-lg">
+                                <h4 class="font-medium text-purple-800 mb-2 flex items-center">
+                                    <i class="fas fa-lightbulb mr-1"></i>
+                                    Diet Optimization
+                                </h4>
+                                <p class="text-purple-700 text-sm">Consider increasing omega-3 rich foods like salmon and walnuts to support heart health with your current medications.</p>
+                            </div>
+                            
+                            <!-- TCM Suggestions -->
+                            <div class="p-4 bg-indigo-50 rounded-lg" data-mock="true">
+                                <h4 class="font-medium text-indigo-800 mb-2 flex items-center">
+                                    <i class="fas fa-yin-yang mr-1"></i>
+                                    Traditional Chinese Medicine
+                                </h4>
+                                <p class="text-indigo-700 text-sm">Based on your constitution, cooling foods like cucumber and green tea may help balance your system during warmer weather.</p>
+                            </div>
+                            
+                            <!-- Personalized Tips -->
+                            <div class="p-4 bg-green-50 rounded-lg">
+                                <h4 class="font-medium text-green-800 mb-2 flex items-center">
+                                    <i class="fas fa-target mr-1"></i>
+                                    Personalized Tips
+                                </h4>
+                                <ul class="text-green-700 text-sm space-y-1">
+                                    <li>• Increase fiber intake by 5g daily for better blood sugar control</li>
+                                    <li>• Try intermittent fasting between 8pm-12pm for metabolic benefits</li>
+                                    <li>• Consider magnesium-rich foods to support your blood pressure medication</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- @COMPONENT: BottomNavigation -->
+        <nav class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-4 py-2 z-50">
+            <div class="flex items-center justify-around">
+                <button class="flex flex-col items-center py-2 px-4 rounded-lg bg-primary/10 text-primary" data-page="health" onclick="showPage('health')">
+                    <i class="fas fa-heartbeat text-xl mb-1"></i>
+                    <span class="text-xs font-medium">Health</span>
+                </button>
+                
+                <button class="flex flex-col items-center py-2 px-4 rounded-lg text-gray-500 hover:text-gray-700" data-page="diary" onclick="showPage('diary')">
+                    <i class="fas fa-book text-xl mb-1"></i>
+                    <span class="text-xs font-medium">Diary</span>
+                </button>
+                
+                <button class="flex flex-col items-center py-2 px-4 rounded-lg text-gray-500 hover:text-gray-700" data-page="insights" onclick="showPage('insights')">
+                    <i class="fas fa-chart-pie text-xl mb-1"></i>
+                    <span class="text-xs font-medium">Insights</span>
+                </button>
+            </div>
+        </nav>
+
+    </div>
+    <!-- @END_COMPONENT: AppShell -->
+
+    <!-- @COMPONENT: NutrientInfoModal -->
+    <div id="nutrient-modal" class="fixed inset-0 bg-black/50 flex items-end justify-center z-50 hidden" onclick="closeModal()">
+        <div class="bg-white rounded-t-2xl p-6 w-full max-w-md max-h-96 overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-900" data-bind="nutrient.name">Vitamin C</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4" data-mock="true">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">What it does</h4>
+                    <p class="text-gray-700 text-sm">Vitamin C is an essential antioxidant that supports immune function, collagen synthesis, and iron absorption.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Benefits for your body</h4>
+                    <ul class="text-gray-700 text-sm space-y-1">
+                        <li>• Boosts immune system</li>
+                        <li>• Supports healthy skin and tissue repair</li>
+                        <li>• Enhances iron absorption</li>
+                        <li>• Acts as powerful antioxidant</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Good sources</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">Citrus fruits</span>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Bell peppers</span>
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Strawberries</span>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Broccoli</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: NutrientInfoModal -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        // Page Navigation
+        (function() {
+            function showPage(pageId) {
+                // Hide all pages
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.add('hidden');
+                });
+                
+                // Show selected page
+                document.getElementById(pageId + '-page').classList.remove('hidden');
+                
+                // Update navigation states
+                document.querySelectorAll('nav button').forEach(btn => {
+                    btn.classList.remove('bg-primary/10', 'text-primary');
+                    btn.classList.add('text-gray-500');
+                });
+                
+                // Highlight active nav
+                const activeBtn = document.querySelector(`nav button[data-page="${pageId}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('bg-primary/10', 'text-primary');
+                    activeBtn.classList.remove('text-gray-500');
+                }
+            }
+            
+            // Make showPage available globally
+            window.showPage = showPage;
+            
+            // Modal Controls
+            window.closeModal = function() {
+                document.getElementById('nutrient-modal').classList.add('hidden');
+            };
+            
+            // Show nutrient info modal
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:viewNutrientInfo"]')) {
+                    document.getElementById('nutrient-modal').classList.remove('hidden');
+                }
+            });
+        })();
+        
+        // Form Interactions
+        (function() {
+            // Smoking habit selection
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.grid button')) {
+                    const buttons = e.target.closest('.grid').querySelectorAll('button');
+                    buttons.forEach(btn => {
+                        btn.classList.remove('border-green-200', 'bg-green-50', 'text-green-700');
+                        btn.classList.add('border-gray-200', 'text-gray-600');
+                    });
+                    
+                    const clickedBtn = e.target.closest('button');
+                    clickedBtn.classList.add('border-green-200', 'bg-green-50', 'text-green-700');
+                    clickedBtn.classList.remove('border-gray-200', 'text-gray-600');
+                }
+            });
+            
+            // Tag removal
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('fa-times')) {
+                    e.target.closest('span').remove();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

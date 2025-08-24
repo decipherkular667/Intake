@@ -1,0 +1,214 @@
+[
+  {
+    "name": "Calories",
+    "description": "Energy units that fuel your body's functions and activities. Calories come from macronutrients: carbohydrates, proteins, and fats.",
+    "benefits": [
+      "Provides energy for daily activities",
+      "Supports metabolic functions", 
+      "Maintains body temperature",
+      "Powers brain function"
+    ],
+    "sources": [
+      "Carbohydrates",
+      "Proteins", 
+      "Fats",
+      "All food sources"
+    ],
+    "unit": "kcal",
+    "dailyValue": 2000
+  },
+  {
+    "name": "Protein",
+    "description": "Essential macronutrient made up of amino acids, crucial for building and repairing tissues, making enzymes and hormones.",
+    "benefits": [
+      "Builds and repairs muscle tissue",
+      "Supports immune system function",
+      "Helps maintain healthy hair, skin, and nails",
+      "Provides satiety and helps control hunger"
+    ],
+    "sources": [
+      "Chicken breast",
+      "Fish",
+      "Eggs", 
+      "Beans",
+      "Greek yogurt",
+      "Quinoa",
+      "Nuts"
+    ],
+    "unit": "g",
+    "dailyValue": 50
+  },
+  {
+    "name": "Carbohydrates",
+    "description": "The body's primary source of energy, including sugars, starches, and fiber. Essential for brain function and physical activity.",
+    "benefits": [
+      "Primary energy source for the brain",
+      "Fuel for physical activity",
+      "Supports digestive health (fiber)",
+      "Helps maintain stable blood sugar"
+    ],
+    "sources": [
+      "Whole grains",
+      "Fruits",
+      "Vegetables",
+      "Legumes",
+      "Sweet potatoes",
+      "Oats"
+    ],
+    "unit": "g",
+    "dailyValue": 300
+  },
+  {
+    "name": "Fat",
+    "description": "Essential macronutrient that provides energy, supports cell function, and helps absorb fat-soluble vitamins.",
+    "benefits": [
+      "Provides essential fatty acids",
+      "Supports brain health",
+      "Helps absorb vitamins A, D, E, K",
+      "Provides long-lasting energy"
+    ],
+    "sources": [
+      "Avocados",
+      "Olive oil",
+      "Nuts",
+      "Seeds",
+      "Fatty fish",
+      "Coconut oil"
+    ],
+    "unit": "g",
+    "dailyValue": 65
+  },
+  {
+    "name": "Fiber",
+    "description": "Indigestible carbohydrate that supports digestive health, helps control blood sugar, and promotes satiety.",
+    "benefits": [
+      "Supports digestive health",
+      "Helps control blood cholesterol",
+      "Regulates blood sugar levels",
+      "Promotes feelings of fullness"
+    ],
+    "sources": [
+      "Beans",
+      "Whole grains",
+      "Apples",
+      "Broccoli",
+      "Berries",
+      "Oats"
+    ],
+    "unit": "g",
+    "dailyValue": 25
+  },
+  {
+    "name": "Sugar",
+    "description": "Simple carbohydrates that provide quick energy. Natural sugars from fruits come with beneficial nutrients, while added sugars should be limited.",
+    "benefits": [
+      "Provides quick energy",
+      "Enhances flavor of foods",
+      "Can help with post-workout recovery"
+    ],
+    "sources": [
+      "Fruits",
+      "Honey",
+      "Maple syrup",
+      "Added sugars",
+      "Dairy products"
+    ],
+    "unit": "g",
+    "dailyValue": 50
+  },
+  {
+    "name": "Sodium",
+    "description": "Essential mineral that helps maintain fluid balance, supports nerve function, and muscle contractions. However, excess intake can raise blood pressure.",
+    "benefits": [
+      "Maintains fluid balance",
+      "Supports nerve transmission",
+      "Enables muscle contractions"
+    ],
+    "sources": [
+      "Table salt",
+      "Processed foods",
+      "Cheese",
+      "Bread",
+      "Pickled foods"
+    ],
+    "unit": "mg",
+    "dailyValue": 2300
+  },
+  {
+    "name": "Vitamin C",
+    "description": "Water-soluble antioxidant vitamin essential for immune function, collagen synthesis, and iron absorption.",
+    "benefits": [
+      "Boosts immune system",
+      "Supports healthy skin and tissue repair", 
+      "Enhances iron absorption",
+      "Acts as powerful antioxidant"
+    ],
+    "sources": [
+      "Citrus fruits",
+      "Bell peppers",
+      "Strawberries",
+      "Broccoli",
+      "Kiwi",
+      "Tomatoes"
+    ],
+    "unit": "mg",
+    "dailyValue": 90
+  },
+  {
+    "name": "Vitamin D",
+    "description": "Fat-soluble vitamin crucial for bone health, immune function, and calcium absorption. Often called the 'sunshine vitamin'.",
+    "benefits": [
+      "Supports bone health",
+      "Enhances immune function",
+      "Improves calcium absorption",
+      "May support mood regulation"
+    ],
+    "sources": [
+      "Sunlight exposure",
+      "Fatty fish",
+      "Fortified milk",
+      "Egg yolks",
+      "Mushrooms"
+    ],
+    "unit": "IU",
+    "dailyValue": 800
+  },
+  {
+    "name": "Iron",
+    "description": "Essential mineral crucial for oxygen transport in blood, energy production, and proper immune function.",
+    "benefits": [
+      "Transports oxygen in blood",
+      "Prevents anemia",
+      "Supports energy production",
+      "Boosts immune function"
+    ],
+    "sources": [
+      "Red meat",
+      "Spinach",
+      "Beans",
+      "Fortified cereals",
+      "Dark chocolate"
+    ],
+    "unit": "mg",
+    "dailyValue": 18
+  },
+  {
+    "name": "Calcium",
+    "description": "Essential mineral vital for bone and teeth health, muscle function, and nerve transmission.",
+    "benefits": [
+      "Builds and maintains strong bones",
+      "Supports teeth health",
+      "Enables muscle contractions",
+      "Supports nerve function"
+    ],
+    "sources": [
+      "Dairy products",
+      "Leafy greens",
+      "Almonds",
+      "Fortified plant milks",
+      "Sardines"
+    ],
+    "unit": "mg",
+    "dailyValue": 1000
+  }
+]

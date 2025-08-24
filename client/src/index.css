@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(210, 25%, 7.8431%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 25%, 7.8431%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 25%, 7.8431%);
+  --primary: hsl(122, 39%, 32%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(207, 72%, 36%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(37, 100%, 50%);
+  --accent-foreground: hsl(0, 0%, 0%);
+  --success: hsl(123, 38%, 57%);
+  --success-foreground: hsl(0, 0%, 100%);
+  --warning: hsl(37, 100%, 50%);
+  --warning-foreground: hsl(0, 0%, 0%);
+  --error: hsl(0, 74%, 51%);
+  --error-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(250, 2%, 90%);
+  --muted-foreground: hsl(210, 25%, 7.8431%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(200, 23%, 97%);
+  --ring: hsl(122, 39%, 32%);
+  --surface: hsl(0, 0%, 100%);
+  --background-gradient: hsl(250, 2%, 98%);
+  --chart-1: hsl(122, 39%, 32%);
+  --chart-2: hsl(123, 38%, 57%);
+  --chart-3: hsl(37, 100%, 50%);
+  --chart-4: hsl(207, 72%, 36%);
+  --chart-5: hsl(0, 74%, 51%);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(200, 7%, 91%);
+  --card: hsl(228, 10%, 10%);
+  --card-foreground: hsl(0, 0%, 85%);
+  --popover: hsl(0, 0%, 0%);
+  --popover-foreground: hsl(200, 7%, 91%);
+  --primary: hsl(122, 39%, 32%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(207, 72%, 36%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(37, 100%, 50%);
+  --accent-foreground: hsl(0, 0%, 0%);
+  --muted: hsl(0, 0%, 9%);
+  --muted-foreground: hsl(210, 4%, 46%);
+  --border: hsl(210, 5%, 15%);
+  --input: hsl(208, 28%, 18%);
+  --ring: hsl(122, 39%, 32%);
+  --surface: hsl(228, 10%, 10%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .text-primary-custom {
+    color: hsl(122, 39%, 32%);
+  }
+  
+  .text-secondary-custom {
+    color: hsl(207, 72%, 36%);
+  }
+  
+  .text-accent-custom {
+    color: hsl(37, 100%, 50%);
+  }
+  
+  .bg-primary-custom {
+    background-color: hsl(122, 39%, 32%);
+  }
+  
+  .bg-secondary-custom {
+    background-color: hsl(207, 72%, 36%);
+  }
+  
+  .bg-accent-custom {
+    background-color: hsl(37, 100%, 50%);
+  }
+  
+  .bg-success-custom {
+    background-color: hsl(123, 38%, 57%);
+  }
+  
+  .bg-warning-custom {
+    background-color: hsl(37, 100%, 50%);
+  }
+  
+  .bg-error-custom {
+    background-color: hsl(0, 74%, 51%);
+  }
+  
+  .bg-surface-custom {
+    background-color: hsl(0, 0%, 100%);
+  }
+  
+  .bg-background-gradient {
+    background-color: hsl(250, 2%, 98%);
+  }
+}

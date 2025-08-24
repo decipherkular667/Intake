@@ -136,7 +136,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/food-entries/:profileId", async (req, res) => {
     try {
       const date = req.query.date as string;
-      const entries = await storage.getFoodEntries(req.params.profileId, date);
+      const profileId = req.params.profileId;
+      
+      // Create default profile if it doesn't exist
+      if (profileId === "default") {
+        const existingProfile = await storage.getHealthProfile("default");
+        if (!existingProfile) {
+          await storage.createHealthProfile({
+            name: "Demo User",
+            height: 170,
+            weight: 70,
+            birthYear: 1990,
+            birthMonth: 1,
+            medicalConditions: [],
+            allergies: [],
+            medications: [],
+            smokingStatus: "never",
+          }, "default");
+        }
+      }
+      
+      const entries = await storage.getFoodEntries(profileId, date);
       res.json(entries);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch food entries" });
@@ -146,6 +166,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/food-entries", async (req, res) => {
     try {
       const validatedData = insertFoodEntrySchema.parse(req.body);
+      
+      // Create default profile if it doesn't exist
+      if (validatedData.profileId === "default") {
+        const existingProfile = await storage.getHealthProfile("default");
+        if (!existingProfile) {
+          await storage.createHealthProfile({
+            name: "Demo User",
+            height: 170,
+            weight: 70,
+            birthYear: 1990,
+            birthMonth: 1,
+            medicalConditions: [],
+            allergies: [],
+            medications: [],
+            smokingStatus: "never",
+          }, "default");
+        }
+      }
+      
       const entry = await storage.createFoodEntry(validatedData);
       res.json(entry);
     } catch (error) {
@@ -272,7 +311,7 @@ async function detectConflicts(profile: any, entries: any[]): Promise<ConflictRe
     for (const entry of entries) {
       const nutrition = entry.nutritionData as NutritionData;
       
-      if (condition.toLowerCase().includes("diabetes") && nutrition.sugar > 20) {
+      if (condition.toLowerCase().includes("diabetes") && (nutrition.sugar || 0) > 20) {
         conflicts.push({
           type: "condition",
           severity: "medium",
@@ -281,7 +320,7 @@ async function detectConflicts(profile: any, entries: any[]): Promise<ConflictRe
         });
       }
       
-      if (condition.toLowerCase().includes("hypertension") && nutrition.sodium > 500) {
+      if (condition.toLowerCase().includes("hypertension") && (nutrition.sodium || 0) > 500) {
         conflicts.push({
           type: "condition",
           severity: "medium",

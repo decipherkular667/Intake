@@ -40,15 +40,19 @@ export class MemStorage implements IStorage {
     return this.healthProfiles.get(id);
   }
 
-  async createHealthProfile(insertProfile: InsertHealthProfile): Promise<HealthProfile> {
-    const id = randomUUID();
+  async createHealthProfile(insertProfile: InsertHealthProfile, id?: string): Promise<HealthProfile> {
+    const profileId = id || randomUUID();
     const profile: HealthProfile = {
       ...insertProfile,
-      id,
+      id: profileId,
+      medicalConditions: insertProfile.medicalConditions || [],
+      allergies: insertProfile.allergies || [],
+      medications: insertProfile.medications || [],
+      smokingFrequency: insertProfile.smokingFrequency || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    this.healthProfiles.set(id, profile);
+    this.healthProfiles.set(profileId, profile);
     return profile;
   }
 
@@ -77,6 +81,7 @@ export class MemStorage implements IStorage {
     const entry: FoodEntry = {
       ...insertEntry,
       id,
+      profileId: insertEntry.profileId || null,
       createdAt: new Date(),
     };
     this.foodEntries.set(id, entry);
@@ -98,6 +103,10 @@ export class MemStorage implements IStorage {
     const insight: Insight = {
       ...insertInsight,
       id,
+      profileId: insertInsight.profileId || null,
+      conflicts: insertInsight.conflicts || [],
+      recommendations: insertInsight.recommendations || [],
+      healthScore: insertInsight.healthScore || null,
       createdAt: new Date(),
     };
     this.insights.set(id, insight);

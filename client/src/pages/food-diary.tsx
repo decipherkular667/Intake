@@ -300,32 +300,75 @@ export default function FoodDiary() {
               <div className="space-y-3">
                 {entries.map((entry, index) => {
                   const nutrition = entry.nutritionData as any;
+                  
+                  // Extract micronutrients
+                  const micronutrients = [];
+                  if (nutrition.vitamins) {
+                    Object.entries(nutrition.vitamins).forEach(([key, value]) => {
+                      if (value && typeof value === 'number' && value > 0) {
+                        micronutrients.push({
+                          name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                          value: value as number,
+                          type: 'vitamin'
+                        });
+                      }
+                    });
+                  }
+                  if (nutrition.minerals) {
+                    Object.entries(nutrition.minerals).forEach(([key, value]) => {
+                      if (value && typeof value === 'number' && value > 0) {
+                        micronutrients.push({
+                          name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                          value: value as number,
+                          type: 'mineral'
+                        });
+                      }
+                    });
+                  }
+                  
                   return (
-                    <div key={entry.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
-                          <Utensils className="w-6 h-6 text-green-600" />
+                    <div key={entry.id} className="p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
+                            <Utensils className="w-6 h-6 text-green-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">{entry.foodName}</div>
+                            <div className="text-sm text-gray-500">{entry.servingSize} {entry.servingUnit}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{entry.foodName}</div>
-                          <div className="text-sm text-gray-500">{entry.servingSize} {entry.servingUnit}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
                         <div className="text-right">
                           <div className="font-medium text-gray-900">{Math.round(nutrition.calories || 0)} cal</div>
                           <div className="text-xs text-gray-500">{Math.round(nutrition.protein || 0)}g protein</div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-primary-custom p-1"
-                          onClick={() => handleNutrientInfo("calories")}
-                          data-testid={`nutrient-info-${entry.id}`}
-                        >
-                          <Info className="w-4 h-4" />
-                        </Button>
                       </div>
+                      
+                      {/* Micronutrients Section */}
+                      {micronutrients.length > 0 && (
+                        <div className="border-t border-gray-200 pt-3">
+                          <div className="text-sm font-medium text-gray-700 mb-2">Micronutrients</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {micronutrients.map((nutrient, idx) => (
+                              <div key={idx} className="flex items-center justify-between bg-white p-2 rounded border">
+                                <div className="text-xs">
+                                  <div className="font-medium text-gray-800">{nutrient.name}</div>
+                                  <div className="text-gray-600">{Math.round(nutrient.value * 100) / 100}mg</div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-primary-custom p-1 h-6 w-6"
+                                  onClick={() => handleNutrientInfo(nutrient.name)}
+                                  data-testid={`nutrient-info-${entry.id}-${nutrient.name.toLowerCase()}`}
+                                >
+                                  <Info className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

@@ -210,5 +210,290 @@
     ],
     "unit": "mg",
     "dailyValue": 1000
+  },
+  {
+    "name": "Potassium",
+    "description": "Essential mineral that helps regulate fluid balance, muscle contractions, and nerve signals.",
+    "benefits": [
+      "Supports heart health",
+      "Helps regulate blood pressure",
+      "Maintains proper muscle function",
+      "Supports kidney function"
+    ],
+    "sources": [
+      "Bananas",
+      "Potatoes",
+      "Spinach",
+      "Avocados",
+      "Beans"
+    ],
+    "unit": "mg",
+    "dailyValue": 3500
+  },
+  {
+    "name": "Magnesium",
+    "description": "Essential mineral involved in over 300 enzyme reactions in the body.",
+    "benefits": [
+      "Supports bone health",
+      "Maintains normal heart rhythm",
+      "Supports muscle function",
+      "Helps with energy production"
+    ],
+    "sources": [
+      "Nuts",
+      "Seeds",
+      "Whole grains",
+      "Dark leafy greens",
+      "Dark chocolate"
+    ],
+    "unit": "mg",
+    "dailyValue": 400
+  },
+  {
+    "name": "Phosphorus",
+    "description": "Essential mineral that works with calcium to build strong bones and teeth.",
+    "benefits": [
+      "Builds strong bones and teeth",
+      "Helps filter waste in kidneys",
+      "Supports energy storage and use",
+      "Aids in tissue repair"
+    ],
+    "sources": [
+      "Dairy products",
+      "Fish",
+      "Meat",
+      "Nuts",
+      "Beans"
+    ],
+    "unit": "mg",
+    "dailyValue": 1250
+  },
+  {
+    "name": "Selenium",
+    "description": "Essential trace mineral with powerful antioxidant properties.",
+    "benefits": [
+      "Acts as powerful antioxidant",
+      "Supports immune system",
+      "May support thyroid function",
+      "Helps protect against cell damage"
+    ],
+    "sources": [
+      "Brazil nuts",
+      "Seafood",
+      "Meat",
+      "Whole grains",
+      "Eggs"
+    ],
+    "unit": "mcg",
+    "dailyValue": 55
+  },
+  {
+    "name": "Vitamin B6",
+    "description": "Water-soluble vitamin essential for brain development and function.",
+    "benefits": [
+      "Supports brain development",
+      "Helps make neurotransmitters",
+      "Supports immune function",
+      "Aids in protein metabolism"
+    ],
+    "sources": [
+      "Fish",
+      "Poultry",
+      "Potatoes",
+      "Chickpeas",
+      "Bananas"
+    ],
+    "unit": "mg",
+    "dailyValue": 1.7
+  },
+  {
+    "name": "Vitamin B12",
+    "description": "Essential vitamin for red blood cell formation and neurological function.",
+    "benefits": [
+      "Supports red blood cell formation",
+      "Maintains healthy nerve function",
+      "Supports DNA synthesis",
+      "May help prevent anemia"
+    ],
+    "sources": [
+      "Fish",
+      "Meat",
+      "Dairy products",
+      "Fortified cereals",
+      "Nutritional yeast"
+    ],
+    "unit": "mcg",
+    "dailyValue": 2.4
+  },
+  {
+    "name": "Folate",
+    "description": "B vitamin crucial for DNA synthesis and cell division, especially important during pregnancy.",
+    "benefits": [
+      "Essential for DNA synthesis",
+      "Supports red blood cell formation",
+      "Critical during pregnancy",
+      "May support heart health"
+    ],
+    "sources": [
+      "Dark leafy greens",
+      "Legumes",
+      "Fortified grains",
+      "Citrus fruits",
+      "Asparagus"
+    ],
+    "unit": "mcg",
+    "dailyValue": 400
+  },
+  {
+    "name": "Vitamin K",
+    "description": "Fat-soluble vitamin essential for blood clotting and bone health.",
+    "benefits": [
+      "Essential for blood clotting",
+      "Supports bone health",
+      "May support heart health",
+      "Aids in wound healing"
+    ],
+    "sources": [
+      "Dark leafy greens",
+      "Broccoli",
+      "Brussels sprouts",
+      "Fish",
+      "Meat"
+    ],
+    "unit": "mcg",
+    "dailyValue": 120
+  },
+  {
+    "name": "Vitamin A",
+    "description": "Fat-soluble vitamin essential for vision, immune function, and cellular growth.",
+    "benefits": [
+      "Essential for good vision",
+      "Supports immune system",
+      "Aids in cellular growth",
+      "Maintains healthy skin"
+    ],
+    "sources": [
+      "Carrots",
+      "Sweet potatoes",
+      "Dark leafy greens",
+      "Liver",
+      "Eggs"
+    ],
+    "unit": "mcg",
+    "dailyValue": 900
+  },
+  {
+    "name": "Vitamin E",
+    "description": "Fat-soluble antioxidant vitamin that protects cells from damage.",
+    "benefits": [
+      "Powerful antioxidant",
+      "Protects cell membranes",
+      "Supports immune function",
+      "May support heart health"
+    ],
+    "sources": [
+      "Nuts",
+      "Seeds",
+      "Vegetable oils",
+      "Green leafy vegetables",
+      "Fortified cereals"
+    ],
+    "unit": "mg",
+    "dailyValue": 15
+  },
+  {
+    "name": "Niacin",
+    "description": "B vitamin that helps convert food into energy and supports nervous system function.",
+    "benefits": [
+      "Helps convert food to energy",
+      "Supports nervous system",
+      "Maintains healthy skin",
+      "May support cholesterol levels"
+    ],
+    "sources": [
+      "Meat",
+      "Fish",
+      "Nuts",
+      "Enriched grains",
+      "Legumes"
+    ],
+    "unit": "mg",
+    "dailyValue": 16
+  },
+  {
+    "name": "Thiamin",
+    "description": "B vitamin essential for energy metabolism and proper nerve, muscle, and heart function.",
+    "benefits": [
+      "Essential for energy metabolism",
+      "Supports nerve function",
+      "Maintains heart function",
+      "Supports brain function"
+    ],
+    "sources": [
+      "Whole grains",
+      "Fortified cereals",
+      "Pork",
+      "Beans",
+      "Nuts"
+    ],
+    "unit": "mg",
+    "dailyValue": 1.2
+  },
+  {
+    "name": "Riboflavin",
+    "description": "B vitamin that helps the body break down carbohydrates, proteins, and fats.",
+    "benefits": [
+      "Helps break down nutrients",
+      "Supports energy production",
+      "Maintains healthy skin",
+      "Supports eye health"
+    ],
+    "sources": [
+      "Dairy products",
+      "Eggs",
+      "Lean meats",
+      "Green leafy vegetables",
+      "Fortified cereals"
+    ],
+    "unit": "mg",
+    "dailyValue": 1.3
+  },
+  {
+    "name": "Manganese",
+    "description": "Essential trace mineral involved in bone formation and nutrient metabolism.",
+    "benefits": [
+      "Supports bone formation",
+      "Aids in nutrient metabolism",
+      "Acts as antioxidant",
+      "Supports wound healing"
+    ],
+    "sources": [
+      "Whole grains",
+      "Nuts",
+      "Leafy vegetables",
+      "Tea",
+      "Pineapple"
+    ],
+    "unit": "mg",
+    "dailyValue": 2.3
+  },
+  {
+    "name": "Omega 3",
+    "description": "Essential fatty acids that support heart health, brain function, and reduce inflammation.",
+    "benefits": [
+      "Supports heart health",
+      "Promotes brain function",
+      "Reduces inflammation",
+      "May improve eye health"
+    ],
+    "sources": [
+      "Fatty fish",
+      "Walnuts",
+      "Flaxseeds",
+      "Chia seeds",
+      "Fish oil"
+    ],
+    "unit": "mg",
+    "dailyValue": 1600
   }
 ]

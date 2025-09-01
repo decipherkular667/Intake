@@ -4,3 +4,17 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Large data files - exclude from git
+server/data/FoodData_Central_survey_food_csv_2024-10-31/
+server/data/food-nutrients.xlsx
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs
+*.log
+logs/

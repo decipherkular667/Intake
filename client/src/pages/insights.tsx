@@ -2,9 +2,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Shield, TrendingUp, Brain, Target, Lightbulb, Wind } from "lucide-react";
 import { useInsights } from "@/hooks/use-insights";
+import { formatNumber, formatWithUnit } from "@/lib/format-number";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function Insights() {
   const { insights, isLoading } = useInsights();
+  const { t } = useLanguage();
 
   if (isLoading) {
     return (
@@ -20,20 +23,20 @@ export default function Insights() {
     safe: {
       bg: "bg-gradient-to-r from-green-500 to-green-600",
       icon: CheckCircle,
-      title: "Health Status: Safe",
-      description: "No critical conflicts detected",
+      title: t('healthStatusSafe'),
+      description: t('noCriticalConflicts'),
     },
     caution: {
       bg: "bg-gradient-to-r from-yellow-500 to-yellow-600",
       icon: Shield,
-      title: "Health Status: Caution",
-      description: "Some potential concerns identified",
+      title: t('healthStatusCaution'),
+      description: t('somePotentialConcerns'),
     },
     avoid: {
       bg: "bg-gradient-to-r from-red-500 to-red-600",
       icon: Shield,
-      title: "Health Status: Avoid",
-      description: "Critical conflicts detected",
+      title: t('healthStatusAvoid'),
+      description: t('criticalConflictsDetected'),
     },
   };
 
@@ -125,72 +128,189 @@ export default function Insights() {
           </CardContent>
         </Card>
 
-        {/* Weekly Summary */}
+        {/* Daily Nutrient Progress */}
+        <Card>
+          <CardContent className="p-5">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Target className="text-primary-custom mr-2" />
+              Today's Nutrition Progress
+            </h3>
+            
+            {/* Daily Nutrition Progress with Real Data */}
+            {(() => {
+              const dailyTotals = (insights as any)?.dailyTotals || {
+                calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0, sugar: 0
+              };
+              
+              // Daily targets
+              const targets = {
+                calories: 2000,
+                protein: 60,
+                carbs: 250,
+                fiber: 25,
+                sodium: 2300
+              };
+
+              const progress = {
+                calories: { current: formatNumber(dailyTotals.calories, 0), target: targets.calories },
+                protein: { current: formatNumber(dailyTotals.protein), target: targets.protein },
+                carbs: { current: formatNumber(dailyTotals.carbs), target: targets.carbs },
+                fiber: { current: formatNumber(dailyTotals.fiber), target: targets.fiber }
+              };
+
+              return (
+                <div className="space-y-4">
+                  {Object.entries(progress).map(([nutrient, data]) => {
+                    const percentage = Math.min(100, (data.current / data.target) * 100);
+                    const color = percentage >= 80 ? 'bg-green-500' : 
+                                percentage >= 50 ? 'bg-yellow-500' : 'bg-red-400';
+                    const bgColor = percentage >= 80 ? 'bg-green-50' : 
+                                   percentage >= 50 ? 'bg-yellow-50' : 'bg-red-50';
+                    const textColor = percentage >= 80 ? 'text-green-700' : 
+                                     percentage >= 50 ? 'text-yellow-700' : 'text-red-700';
+                    
+                    return (
+                      <div key={nutrient} className={`p-4 rounded-lg ${bgColor}`}>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className={`font-medium ${textColor} capitalize`}>{nutrient}</span>
+                          <span className={`text-sm ${textColor}`}>
+                            {formatNumber(data.current, 0)}/{formatNumber(data.target, 0)}{nutrient === 'calories' ? '' : 'g'}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${color} transition-all duration-300`}
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                        <div className={`text-xs ${textColor} mt-1`}>
+                          {formatNumber(percentage, 0)}% of daily goal
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </CardContent>
+        </Card>
+
+        {/* Weekly Summary - Dynamic */}
         <Card>
           <CardContent className="p-5">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <TrendingUp className="text-secondary-custom mr-2" />
-              Weekly Summary
+              {insights?.weeklySummary?.period || "Weekly Summary"}
             </h3>
             
-            {/* Calorie Chart */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-700">Daily Calories</span>
-                <span className="text-sm text-gray-500">Target: 2000</span>
-              </div>
-              <div className="space-y-2" data-testid="weekly-calories">
-                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
-                  const calories = [1847, 1923, 2156, 1876, 2045, 1992, 1765][index];
-                  const percentage = (calories / 2000) * 100;
-                  return (
-                    <div key={day} className="flex items-center space-x-3">
-                      <span className="text-sm text-gray-600 w-12">{day}</span>
-                      <div className="flex-1 bg-gray-100 rounded-full h-3">
-                        <div 
-                          className={`h-3 rounded-full ${percentage > 100 ? 'bg-warning-custom' : 'bg-primary-custom'}`}
-                          style={{width: `${Math.min(100, percentage)}%`}}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-800 w-16">{calories}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {insights?.weeklySummary ? (
+              <>
+                {/* Weekly Nutrient Progress Bars */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-700 mb-3">Weekly Averages</h4>
+                  {(() => {
+                    const weeklyTargets = {
+                      calories: 2000,
+                      protein: 60,
+                      carbs: 250,
+                      fat: 65
+                    };
 
-            {/* Macro Distribution */}
-            <div className="grid grid-cols-3 gap-4" data-testid="macro-distribution">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-700">45%</div>
-                <div className="text-sm text-blue-600">Carbs</div>
+                    const weeklyData = [
+                      { name: 'Calories', current: insights.weeklySummary.calories, target: weeklyTargets.calories, unit: '' },
+                      { name: 'Protein', current: insights.weeklySummary.protein, target: weeklyTargets.protein, unit: 'g' },
+                      { name: 'Carbs', current: insights.weeklySummary.carbs, target: weeklyTargets.carbs, unit: 'g' },
+                      { name: 'Fat', current: insights.weeklySummary.fat, target: weeklyTargets.fat, unit: 'g' }
+                    ];
+
+                    return (
+                      <div className="space-y-3">
+                        {weeklyData.map((item) => {
+                          const percentage = Math.min(100, (item.current / item.target) * 100);
+                          const color = percentage >= 80 ? 'bg-blue-500' : 
+                                       percentage >= 50 ? 'bg-purple-500' : 'bg-gray-400';
+                          
+                          return (
+                            <div key={item.name} className="bg-gray-50 p-3 rounded-lg">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="font-medium text-gray-700">{item.name}</span>
+                                <span className="text-sm text-gray-600">
+                                  {formatNumber(item.current, 0)}{item.unit} / {formatNumber(item.target, 0)}{item.unit}
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className={`h-2 rounded-full ${color} transition-all duration-500`}
+                                  style={{ width: `${percentage}%` }}
+                                ></div>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {formatNumber(percentage, 0)}% of recommended daily intake
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Weekly Stats Grid */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-indigo-50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-indigo-700">{insights.weeklySummary.variety}/10</div>
+                    <div className="text-sm text-indigo-600">Food Variety Score</div>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-green-700">{insights.weeklySummary.daysTracked}</div>
+                    <div className="text-sm text-green-600">Days Tracked</div>
+                  </div>
+                </div>
+
+                {/* AI Analysis & Insights */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-800">Weekly Insights</h4>
+                  {insights.weeklySummary.insights?.map((insight: string, index: number) => (
+                    <div key={index} className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                      <p className="text-blue-800 text-sm">{insight}</p>
+                    </div>
+                  ))}
+                  
+                  {insights.weeklySummary.aiAnalysis && (
+                    <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+                      <h5 className="font-medium text-purple-800 mb-2 flex items-center">
+                        <Brain className="w-4 h-4 mr-1" />
+                        AI Weekly Analysis
+                      </h5>
+                      <p className="text-purple-700 text-sm">{insights.weeklySummary.aiAnalysis}</p>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="text-center p-8 text-gray-500">
+                <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Track more meals to see your weekly summary</p>
               </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-700">25%</div>
-                <div className="text-sm text-green-600">Protein</div>
-              </div>
-              <div className="text-center p-3 bg-orange-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-700">30%</div>
-                <div className="text-sm text-orange-600">Fat</div>
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* AI Recommendations */}
+        {/* Health Recommendations */}
         <Card className="mb-6">
           <CardContent className="p-5">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <Brain className="text-purple-600 mr-2" />
-              AI Recommendations
+              <Lightbulb className="text-purple-600 mr-2" />
+              Health Recommendations
             </h3>
             
-            <div className="space-y-4" data-testid="recommendations-list">
-              {/* Display actual recommendations */}
-              {insights?.recommendations && (insights.recommendations as any[]).map((rec, index) => {
+            <div className="space-y-4" data-testid="health-recommendations-list">
+              {/* Display diet and lifestyle recommendations */}
+              {insights?.recommendations && (insights.recommendations as any[])
+                .filter((rec: any) => rec.type === "diet" || rec.type === "lifestyle")
+                .map((rec, index) => {
                 const typeConfig = {
                   diet: { bg: "bg-purple-50", icon: Lightbulb, color: "text-purple-800" },
-                  tcm: { bg: "bg-indigo-50", icon: Wind, color: "text-indigo-800" },
                   lifestyle: { bg: "bg-green-50", icon: Target, color: "text-green-800" },
                 };
                 
@@ -216,8 +336,9 @@ export default function Insights() {
                 );
               })}
               
-              {/* Default recommendations if none exist */}
-              {(!insights?.recommendations || (insights.recommendations as any[]).length === 0) && (
+              {/* Default health recommendations if none exist */}
+              {(!insights?.recommendations || 
+                (insights.recommendations as any[]).filter((rec: any) => rec.type === "diet" || rec.type === "lifestyle").length === 0) && (
                 <>
                   <div className="p-4 bg-purple-50 rounded-lg">
                     <h4 className="font-medium text-purple-800 mb-2 flex items-center">
@@ -239,6 +360,53 @@ export default function Insights() {
                     </p>
                   </div>
                 </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Traditional Chinese Medicine Health Recommendations */}
+        <Card className="mb-6">
+          <CardContent className="p-5">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Wind className="text-indigo-600 mr-2" />
+              Traditional Chinese Medicine Health Recommendations
+            </h3>
+            
+            <div className="space-y-4" data-testid="tcm-recommendations-list">
+              {/* Display TCM recommendations */}
+              {insights?.recommendations && (insights.recommendations as any[])
+                .filter((rec: any) => rec.type === "tcm")
+                .map((rec, index) => (
+                  <div key={index} className="p-4 bg-indigo-50 rounded-lg">
+                    <h4 className="font-medium text-indigo-800 mb-2 flex items-center">
+                      <Wind className="w-4 h-4 mr-1" />
+                      {rec.title}
+                    </h4>
+                    <p className="text-indigo-800 text-sm">{rec.description}</p>
+                    {rec.priority && (
+                      <Badge 
+                        variant={rec.priority === "high" ? "destructive" : rec.priority === "medium" ? "default" : "secondary"}
+                        className="mt-2"
+                      >
+                        {rec.priority} priority
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              
+              {/* Default TCM recommendations if none exist */}
+              {(!insights?.recommendations || 
+                (insights.recommendations as any[]).filter((rec: any) => rec.type === "tcm").length === 0) && (
+                <div className="p-4 bg-indigo-50 rounded-lg">
+                  <h4 className="font-medium text-indigo-800 mb-2 flex items-center">
+                    <Wind className="w-4 h-4 mr-1" />
+                    Balance and Harmony
+                  </h4>
+                  <p className="text-indigo-700 text-sm">
+                    Your current dietary choices support overall balance. Consider seasonal foods and mindful eating practices for optimal health.
+                  </p>
+                </div>
               )}
             </div>
           </CardContent>

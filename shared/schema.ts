@@ -39,6 +39,8 @@ export const insights = pgTable("insights", {
   recommendations: jsonb("recommendations").default([]), // AI recommendations
   healthScore: integer("health_score"), // 1-10
   status: text("status").notNull().default("safe"), // safe, caution, avoid
+  weeklySummary: jsonb("weekly_summary"), // AI-powered weekly analysis
+  dailyTotals: jsonb("daily_totals"), // Daily nutrition totals
   createdAt: timestamp("created_at").defaultNow(),
 });
 

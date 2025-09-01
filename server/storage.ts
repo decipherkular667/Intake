@@ -107,6 +107,8 @@ export class MemStorage implements IStorage {
       conflicts: insertInsight.conflicts || [],
       recommendations: insertInsight.recommendations || [],
       healthScore: insertInsight.healthScore || null,
+      weeklySummary: insertInsight.weeklySummary || null,
+      dailyTotals: insertInsight.dailyTotals || null,
       createdAt: new Date(),
     };
     this.insights.set(id, insight);

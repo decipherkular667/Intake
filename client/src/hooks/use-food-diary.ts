@@ -39,7 +39,11 @@ export function useFoodDiary(profileId: string = "default", date?: string) {
 
   const searchFood = async (query: string) => {
     const result = await foodApi.search(query);
-    return result.foods;
+    // Include source information in the returned foods
+    return result.foods.map((food: any) => ({
+      ...food,
+      source: result.source || 'local'
+    }));
   };
 
   const getNutrition = async (foodId: string) => {

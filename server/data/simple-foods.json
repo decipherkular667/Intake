@@ -1,0 +1,809 @@
+[
+  {
+    "id": "banana-1",
+    "name": "Banana",
+    "chineseName": "香蕉",
+    "brand": null,
+    "nutrition": {
+      "calories": 105,
+      "protein": 1.3,
+      "carbs": 27,
+      "fat": 0.3,
+      "fiber": 3.1,
+      "sugar": 14,
+      "sodium": 1,
+      "vitamins": { "vitamin_c": 10.3, "vitamin_b6": 0.4, "folate": 20 },
+      "minerals": { "potassium": 422, "magnesium": 32 }
+    }
+  },
+  {
+    "id": "apple-1",
+    "name": "Apple",
+    "chineseName": "苹果",
+    "brand": null,
+    "nutrition": {
+      "calories": 95,
+      "protein": 0.5,
+      "carbs": 25,
+      "fat": 0.3,
+      "fiber": 4.4,
+      "sugar": 19,
+      "sodium": 2,
+      "vitamins": { "vitamin_c": 8.4, "vitamin_k": 4 },
+      "minerals": { "potassium": 195, "calcium": 11 }
+    }
+  },
+  {
+    "id": "orange-1",
+    "name": "Orange",
+    "chineseName": "橙子",
+    "brand": null,
+    "nutrition": {
+      "calories": 62,
+      "protein": 1.2,
+      "carbs": 15.4,
+      "fat": 0.2,
+      "fiber": 3.1,
+      "sugar": 12.2,
+      "sodium": 0,
+      "vitamins": { "vitamin_c": 70, "folate": 40, "thiamin": 0.1 },
+      "minerals": { "potassium": 237, "calcium": 52 }
+    }
+  },
+  {
+    "id": "strawberries-1",
+    "name": "Strawberries",
+    "chineseName": "草莓",
+    "brand": null,
+    "nutrition": {
+      "calories": 32,
+      "protein": 0.7,
+      "carbs": 7.7,
+      "fat": 0.3,
+      "fiber": 2,
+      "sugar": 4.9,
+      "sodium": 1,
+      "vitamins": { "vitamin_c": 89.4, "folate": 24, "vitamin_k": 2.2 },
+      "minerals": { "potassium": 153, "manganese": 0.4 }
+    }
+  },
+  {
+    "id": "blueberries-1",
+    "name": "Blueberries",
+    "chineseName": "蓝莓",
+    "brand": null,
+    "nutrition": {
+      "calories": 57,
+      "protein": 0.7,
+      "carbs": 14.5,
+      "fat": 0.3,
+      "fiber": 2.4,
+      "sugar": 10,
+      "sodium": 1,
+      "vitamins": { "vitamin_c": 9.7, "vitamin_k": 19.3, "folate": 6 },
+      "minerals": { "potassium": 77, "manganese": 0.3 }
+    }
+  },
+  {
+    "id": "chicken-breast-1",
+    "name": "Chicken Breast, Grilled",
+    "chineseName": "烤鸡胸肉",
+    "brand": null,
+    "nutrition": {
+      "calories": 165,
+      "protein": 31,
+      "carbs": 0,
+      "fat": 3.6,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 74,
+      "vitamins": { "niacin": 14.8, "vitamin_b6": 1.0, "vitamin_b12": 0.3 },
+      "minerals": { "phosphorus": 228, "selenium": 27.6 }
+    }
+  },
+  {
+    "id": "chicken-thigh-1",
+    "name": "Chicken Thigh, Grilled",
+    "brand": null,
+    "nutrition": {
+      "calories": 209,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 11,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 84,
+      "vitamins": { "niacin": 6.8, "vitamin_b6": 0.5, "vitamin_b12": 0.3 },
+      "minerals": { "phosphorus": 176, "selenium": 22.5 }
+    }
+  },
+  {
+    "id": "beef-sirloin-1",
+    "name": "Beef Sirloin, Grilled",
+    "brand": null,
+    "nutrition": {
+      "calories": 158,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 5.4,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 58,
+      "vitamins": { "niacin": 7.6, "vitamin_b12": 1.4, "vitamin_b6": 0.7 },
+      "minerals": { "iron": 2.9, "zinc": 6.2, "selenium": 26.4 }
+    }
+  },
+  {
+    "id": "pork-tenderloin-1",
+    "name": "Pork Tenderloin, Roasted",
+    "brand": null,
+    "nutrition": {
+      "calories": 147,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 4.1,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 62,
+      "vitamins": { "thiamin": 0.9, "niacin": 6.3, "vitamin_b6": 0.4 },
+      "minerals": { "phosphorus": 246, "selenium": 38.2 }
+    }
+  },
+  {
+    "id": "salmon-1",
+    "name": "Salmon, Grilled",
+    "chineseName": "烤三文鱼",
+    "brand": null,
+    "nutrition": {
+      "calories": 206,
+      "protein": 22,
+      "carbs": 0,
+      "fat": 12,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 59,
+      "vitamins": { "vitamin_d": 11, "vitamin_b12": 2.8, "niacin": 8.5 },
+      "minerals": { "selenium": 36.5, "phosphorus": 252 }
+    }
+  },
+  {
+    "id": "tuna-1",
+    "name": "Tuna, Canned in Water",
+    "brand": null,
+    "nutrition": {
+      "calories": 116,
+      "protein": 25.5,
+      "carbs": 0,
+      "fat": 0.8,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 320,
+      "vitamins": { "niacin": 12.6, "vitamin_b12": 2.5, "vitamin_b6": 0.4 },
+      "minerals": { "selenium": 78.2, "phosphorus": 184 }
+    }
+  },
+  {
+    "id": "cod-1",
+    "name": "Cod, Baked",
+    "brand": null,
+    "nutrition": {
+      "calories": 105,
+      "protein": 23,
+      "carbs": 0,
+      "fat": 0.9,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 78,
+      "vitamins": { "niacin": 2.3, "vitamin_b12": 1.0, "vitamin_b6": 0.2 },
+      "minerals": { "phosphorus": 203, "selenium": 33.1 }
+    }
+  },
+  {
+    "id": "greek-yogurt-1",
+    "name": "Greek Yogurt, Plain",
+    "brand": null,
+    "nutrition": {
+      "calories": 100,
+      "protein": 17,
+      "carbs": 6,
+      "fat": 0.4,
+      "fiber": 0,
+      "sugar": 6,
+      "sodium": 56,
+      "vitamins": { "vitamin_b12": 1.3, "riboflavin": 0.3 },
+      "minerals": { "calcium": 200, "phosphorus": 240 }
+    }
+  },
+  {
+    "id": "cottage-cheese-1",
+    "name": "Cottage Cheese, Low Fat",
+    "brand": null,
+    "nutrition": {
+      "calories": 82,
+      "protein": 14,
+      "carbs": 5,
+      "fat": 1.2,
+      "fiber": 0,
+      "sugar": 5,
+      "sodium": 406,
+      "vitamins": { "vitamin_b12": 0.7, "riboflavin": 0.2 },
+      "minerals": { "calcium": 111, "phosphorus": 159 }
+    }
+  },
+  {
+    "id": "milk-skim-1",
+    "name": "Milk, Skim",
+    "brand": null,
+    "nutrition": {
+      "calories": 83,
+      "protein": 8.3,
+      "carbs": 12,
+      "fat": 0.2,
+      "fiber": 0,
+      "sugar": 12,
+      "sodium": 103,
+      "vitamins": { "vitamin_b12": 1.3, "riboflavin": 0.4, "vitamin_d": 2.9 },
+      "minerals": { "calcium": 306, "phosphorus": 247 }
+    }
+  },
+  {
+    "id": "cheddar-cheese-1",
+    "name": "Cheddar Cheese",
+    "brand": null,
+    "nutrition": {
+      "calories": 113,
+      "protein": 7,
+      "carbs": 1,
+      "fat": 9,
+      "fiber": 0,
+      "sugar": 0.5,
+      "sodium": 174,
+      "vitamins": { "vitamin_b12": 0.2, "vitamin_a": 75 },
+      "minerals": { "calcium": 202, "phosphorus": 145 }
+    }
+  },
+  {
+    "id": "oatmeal-1",
+    "name": "Oatmeal, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 154,
+      "protein": 6,
+      "carbs": 28,
+      "fat": 3,
+      "fiber": 4,
+      "sugar": 0.6,
+      "sodium": 9,
+      "vitamins": { "thiamin": 0.2, "vitamin_b6": 0.1 },
+      "minerals": { "manganese": 1.9, "phosphorus": 180, "magnesium": 63 }
+    }
+  },
+  {
+    "id": "quinoa-1",
+    "name": "Quinoa, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 222,
+      "protein": 8,
+      "carbs": 39,
+      "fat": 3.6,
+      "fiber": 5.2,
+      "sugar": 0.9,
+      "sodium": 13,
+      "vitamins": { "folate": 78, "thiamin": 0.2, "vitamin_b6": 0.2 },
+      "minerals": { "manganese": 1.2, "phosphorus": 281, "magnesium": 118 }
+    }
+  },
+  {
+    "id": "brown-rice-1",
+    "name": "Brown Rice, Cooked",
+    "chineseName": "糙米饭",
+    "brand": null,
+    "nutrition": {
+      "calories": 112,
+      "protein": 2.6,
+      "carbs": 23,
+      "fat": 0.9,
+      "fiber": 1.8,
+      "sugar": 0.4,
+      "sodium": 5,
+      "vitamins": { "niacin": 3, "thiamin": 0.1 },
+      "minerals": { "manganese": 1.1, "phosphorus": 83, "magnesium": 43 }
+    }
+  },
+  {
+    "id": "white-rice-1",
+    "name": "White Rice, Cooked",
+    "chineseName": "白米饭",
+    "brand": null,
+    "nutrition": {
+      "calories": 130,
+      "protein": 2.7,
+      "carbs": 28,
+      "fat": 0.3,
+      "fiber": 0.4,
+      "sugar": 0.1,
+      "sodium": 1,
+      "vitamins": { "thiamin": 0.2, "niacin": 1.6, "folate": 58 },
+      "minerals": { "manganese": 0.6, "selenium": 11.9 }
+    }
+  },
+  {
+    "id": "whole-wheat-bread-1",
+    "name": "Whole Wheat Bread",
+    "brand": null,
+    "nutrition": {
+      "calories": 81,
+      "protein": 4,
+      "carbs": 14,
+      "fat": 1.1,
+      "fiber": 1.9,
+      "sugar": 1.4,
+      "sodium": 144,
+      "vitamins": { "thiamin": 0.1, "niacin": 1.8, "folate": 14 },
+      "minerals": { "manganese": 1.5, "selenium": 17.8 }
+    }
+  },
+  {
+    "id": "pasta-1",
+    "name": "Pasta, Whole Wheat, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 124,
+      "protein": 5.3,
+      "carbs": 25,
+      "fat": 0.8,
+      "fiber": 3.2,
+      "sugar": 0.8,
+      "sodium": 3,
+      "vitamins": { "thiamin": 0.1, "niacin": 1.0, "folate": 18 },
+      "minerals": { "manganese": 1.9, "selenium": 23.2 }
+    }
+  },
+  {
+    "id": "sweet-potato-1",
+    "name": "Sweet Potato, Baked",
+    "brand": null,
+    "nutrition": {
+      "calories": 112,
+      "protein": 2,
+      "carbs": 26,
+      "fat": 0.1,
+      "fiber": 3.9,
+      "sugar": 5.4,
+      "sodium": 7,
+      "vitamins": { "vitamin_a": 961, "vitamin_c": 22.3, "vitamin_b6": 0.3 },
+      "minerals": { "potassium": 542, "manganese": 0.5 }
+    }
+  },
+  {
+    "id": "broccoli-1",
+    "name": "Broccoli, Steamed",
+    "chineseName": "西兰花",
+    "brand": null,
+    "nutrition": {
+      "calories": 27,
+      "protein": 1.9,
+      "carbs": 5.6,
+      "fat": 0.4,
+      "fiber": 2.3,
+      "sugar": 1.5,
+      "sodium": 41,
+      "vitamins": { "vitamin_c": 51.0, "vitamin_k": 141, "folate": 57 },
+      "minerals": { "potassium": 288, "calcium": 40 }
+    }
+  },
+  {
+    "id": "spinach-1",
+    "name": "Spinach, Raw",
+    "brand": null,
+    "nutrition": {
+      "calories": 7,
+      "protein": 0.9,
+      "carbs": 1.1,
+      "fat": 0.1,
+      "fiber": 0.7,
+      "sugar": 0.1,
+      "sodium": 24,
+      "vitamins": { "vitamin_k": 145, "vitamin_a": 469, "folate": 58, "vitamin_c": 8.4 },
+      "minerals": { "iron": 0.8, "magnesium": 24, "potassium": 167 }
+    }
+  },
+  {
+    "id": "kale-1",
+    "name": "Kale, Raw",
+    "brand": null,
+    "nutrition": {
+      "calories": 8,
+      "protein": 0.6,
+      "carbs": 1.4,
+      "fat": 0.1,
+      "fiber": 0.6,
+      "sugar": 0.8,
+      "sodium": 11,
+      "vitamins": { "vitamin_k": 71.8, "vitamin_a": 206, "vitamin_c": 19.2 },
+      "minerals": { "calcium": 24, "potassium": 71 }
+    }
+  },
+  {
+    "id": "carrots-1",
+    "name": "Carrots, Raw",
+    "brand": null,
+    "nutrition": {
+      "calories": 25,
+      "protein": 0.5,
+      "carbs": 6,
+      "fat": 0.1,
+      "fiber": 1.7,
+      "sugar": 2.9,
+      "sodium": 42,
+      "vitamins": { "vitamin_a": 509, "vitamin_k": 8.1, "vitamin_c": 3.6 },
+      "minerals": { "potassium": 195, "calcium": 20 }
+    }
+  },
+  {
+    "id": "bell-pepper-1",
+    "name": "Bell Pepper, Red",
+    "brand": null,
+    "nutrition": {
+      "calories": 20,
+      "protein": 0.6,
+      "carbs": 4.6,
+      "fat": 0.2,
+      "fiber": 1.5,
+      "sugar": 2.5,
+      "sodium": 2,
+      "vitamins": { "vitamin_c": 95, "vitamin_a": 157, "vitamin_b6": 0.2 },
+      "minerals": { "potassium": 130, "folate": 23 }
+    }
+  },
+  {
+    "id": "tomato-1",
+    "name": "Tomato, Raw",
+    "brand": null,
+    "nutrition": {
+      "calories": 16,
+      "protein": 0.8,
+      "carbs": 3.5,
+      "fat": 0.2,
+      "fiber": 1.0,
+      "sugar": 2.4,
+      "sodium": 3,
+      "vitamins": { "vitamin_c": 12.7, "vitamin_k": 7.9, "folate": 13 },
+      "minerals": { "potassium": 211, "phosphorus": 21 }
+    }
+  },
+  {
+    "id": "avocado-1",
+    "name": "Avocado",
+    "brand": null,
+    "nutrition": {
+      "calories": 234,
+      "protein": 2.9,
+      "carbs": 12,
+      "fat": 21,
+      "fiber": 10,
+      "sugar": 1,
+      "sodium": 10,
+      "vitamins": { "vitamin_k": 26, "folate": 114, "vitamin_c": 12, "vitamin_e": 2.1 },
+      "minerals": { "potassium": 690, "magnesium": 39 }
+    }
+  },
+  {
+    "id": "almonds-1",
+    "name": "Almonds, Raw",
+    "brand": null,
+    "nutrition": {
+      "calories": 161,
+      "protein": 6,
+      "carbs": 6,
+      "fat": 14,
+      "fiber": 3.5,
+      "sugar": 1.2,
+      "sodium": 0,
+      "vitamins": { "vitamin_e": 7.3, "riboflavin": 0.3, "niacin": 1.0 },
+      "minerals": { "magnesium": 76, "phosphorus": 134, "calcium": 76 }
+    }
+  },
+  {
+    "id": "walnuts-1",
+    "name": "Walnuts",
+    "brand": null,
+    "nutrition": {
+      "calories": 185,
+      "protein": 4.3,
+      "carbs": 3.9,
+      "fat": 18.5,
+      "fiber": 1.9,
+      "sugar": 0.7,
+      "sodium": 1,
+      "vitamins": { "folate": 28, "vitamin_b6": 0.2, "thiamin": 0.1 },
+      "minerals": { "manganese": 1.2, "copper": 0.5, "magnesium": 45 }
+    }
+  },
+  {
+    "id": "peanut-butter-1",
+    "name": "Peanut Butter, Natural",
+    "brand": null,
+    "nutrition": {
+      "calories": 188,
+      "protein": 8,
+      "carbs": 8,
+      "fat": 16,
+      "fiber": 2,
+      "sugar": 3,
+      "sodium": 5,
+      "vitamins": { "niacin": 4.2, "folate": 24, "vitamin_e": 2.9 },
+      "minerals": { "magnesium": 57, "phosphorus": 107, "potassium": 208 }
+    }
+  },
+  {
+    "id": "egg-1",
+    "name": "Egg, Large",
+    "chineseName": "鸡蛋",
+    "brand": null,
+    "nutrition": {
+      "calories": 70,
+      "protein": 6,
+      "carbs": 0.6,
+      "fat": 5,
+      "fiber": 0,
+      "sugar": 0.6,
+      "sodium": 70,
+      "vitamins": { "vitamin_b12": 0.4, "riboflavin": 0.2, "folate": 22 },
+      "minerals": { "selenium": 15.4, "phosphorus": 86 }
+    }
+  },
+  {
+    "id": "tofu-1",
+    "name": "Tofu, Firm",
+    "chineseName": "豆腐",
+    "brand": null,
+    "nutrition": {
+      "calories": 144,
+      "protein": 15,
+      "carbs": 3,
+      "fat": 9,
+      "fiber": 2,
+      "sugar": 1,
+      "sodium": 14,
+      "vitamins": { "thiamin": 0.1, "folate": 23, "choline": 27 },
+      "minerals": { "calcium": 350, "magnesium": 58, "iron": 2.7 }
+    }
+  },
+  {
+    "id": "beans-black-1",
+    "name": "Black Beans, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 114,
+      "protein": 7.6,
+      "carbs": 20,
+      "fat": 0.5,
+      "fiber": 7.5,
+      "sugar": 0.3,
+      "sodium": 1,
+      "vitamins": { "folate": 128, "thiamin": 0.2, "vitamin_b6": 0.1 },
+      "minerals": { "magnesium": 60, "phosphorus": 120, "potassium": 355 }
+    }
+  },
+  {
+    "id": "lentils-1",
+    "name": "Lentils, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 116,
+      "protein": 9,
+      "carbs": 20,
+      "fat": 0.4,
+      "fiber": 7.9,
+      "sugar": 1.8,
+      "sodium": 2,
+      "vitamins": { "folate": 181, "thiamin": 0.2, "vitamin_b6": 0.2 },
+      "minerals": { "iron": 3.3, "magnesium": 36, "phosphorus": 180 }
+    }
+  },
+  {
+    "id": "chickpeas-1",
+    "name": "Chickpeas, Cooked",
+    "brand": null,
+    "nutrition": {
+      "calories": 134,
+      "protein": 7.3,
+      "carbs": 22.5,
+      "fat": 2.1,
+      "fiber": 6.2,
+      "sugar": 4,
+      "sodium": 6,
+      "vitamins": { "folate": 172, "vitamin_b6": 0.1, "thiamin": 0.1 },
+      "minerals": { "manganese": 1.0, "phosphorus": 168, "magnesium": 48 }
+    }
+  },
+  {
+    "id": "watermelon-1",
+    "name": "Watermelon",
+    "chineseName": "西瓜",
+    "brand": null,
+    "nutrition": {
+      "calories": 30,
+      "protein": 0.6,
+      "carbs": 7.6,
+      "fat": 0.2,
+      "fiber": 0.4,
+      "sugar": 6.2,
+      "sodium": 1,
+      "vitamins": { "vitamin_c": 8.1, "vitamin_a": 28, "lycopene": 4532, "vitamin_b6": 0.05 },
+      "minerals": { "potassium": 112, "magnesium": 10, "calcium": 7 }
+    }
+  },
+  {
+    "id": "dumplings-1",
+    "name": "Pork Dumplings",
+    "chineseName": "猪肉饺子",
+    "brand": null,
+    "nutrition": {
+      "calories": 41,
+      "protein": 2.2,
+      "carbs": 4.1,
+      "fat": 1.7,
+      "fiber": 0.2,
+      "sugar": 0.3,
+      "sodium": 166,
+      "vitamins": { "thiamin": 0.1, "niacin": 1.1, "vitamin_b6": 0.1 },
+      "minerals": { "iron": 0.7, "phosphorus": 28, "potassium": 42 }
+    }
+  },
+  {
+    "id": "noodles-1",
+    "name": "Chinese Egg Noodles",
+    "chineseName": "鸡蛋面条",
+    "brand": null,
+    "nutrition": {
+      "calories": 138,
+      "protein": 4.5,
+      "carbs": 25,
+      "fat": 2.1,
+      "fiber": 1.2,
+      "sugar": 0.6,
+      "sodium": 3,
+      "vitamins": { "thiamin": 0.3, "riboflavin": 0.1, "niacin": 2.3 },
+      "minerals": { "iron": 1.4, "magnesium": 18, "phosphorus": 58 }
+    }
+  },
+  {
+    "id": "bok-choy-1",
+    "name": "Bok Choy",
+    "chineseName": "小白菜",
+    "brand": null,
+    "nutrition": {
+      "calories": 9,
+      "protein": 1,
+      "carbs": 1.5,
+      "fat": 0.1,
+      "fiber": 0.7,
+      "sugar": 0.8,
+      "sodium": 46,
+      "vitamins": { "vitamin_c": 31.5, "vitamin_a": 223, "vitamin_k": 31.9, "folate": 46 },
+      "minerals": { "calcium": 74, "potassium": 176, "iron": 0.6 }
+    }
+  },
+  {
+    "id": "congee-1",
+    "name": "Rice Congee",
+    "chineseName": "白粥",
+    "brand": null,
+    "nutrition": {
+      "calories": 30,
+      "protein": 0.6,
+      "carbs": 6.8,
+      "fat": 0.1,
+      "fiber": 0.1,
+      "sugar": 0,
+      "sodium": 1,
+      "vitamins": { "thiamin": 0.01, "niacin": 0.4 },
+      "minerals": { "iron": 0.1, "magnesium": 2 }
+    }
+  },
+  {
+    "id": "chinese-cabbage-1",
+    "name": "Chinese Cabbage",
+    "chineseName": "大白菜",
+    "brand": null,
+    "nutrition": {
+      "calories": 12,
+      "protein": 1.2,
+      "carbs": 2.2,
+      "fat": 0.2,
+      "fiber": 1,
+      "sugar": 1.4,
+      "sodium": 9,
+      "vitamins": { "vitamin_c": 27, "vitamin_k": 42.9, "folate": 79 },
+      "minerals": { "calcium": 77, "potassium": 202 }
+    }
+  },
+  {
+    "id": "soy-sauce-1",
+    "name": "Soy Sauce",
+    "chineseName": "生抽",
+    "brand": null,
+    "nutrition": {
+      "calories": 10,
+      "protein": 1.5,
+      "carbs": 1,
+      "fat": 0,
+      "fiber": 0.1,
+      "sugar": 0.4,
+      "sodium": 879,
+      "vitamins": { "niacin": 0.7 },
+      "minerals": { "potassium": 212, "magnesium": 40 }
+    }
+  },
+  {
+    "id": "steamed-fish-1",
+    "name": "Steamed Fish",
+    "chineseName": "蒸鱼",
+    "brand": null,
+    "nutrition": {
+      "calories": 96,
+      "protein": 20,
+      "carbs": 0,
+      "fat": 1.2,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 58,
+      "vitamins": { "niacin": 3.8, "vitamin_b12": 1.2, "vitamin_b6": 0.2 },
+      "minerals": { "phosphorus": 203, "selenium": 36.5, "potassium": 384 }
+    }
+  },
+  {
+    "id": "green-tea-1",
+    "name": "Green Tea",
+    "chineseName": "绿茶",
+    "brand": null,
+    "nutrition": {
+      "calories": 2,
+      "protein": 0.2,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 1,
+      "vitamins": { "vitamin_c": 0.3 },
+      "minerals": { "potassium": 8, "magnesium": 1 }
+    }
+  },
+  {
+    "id": "shiitake-mushrooms-1",
+    "name": "Shiitake Mushrooms",
+    "chineseName": "香菇",
+    "brand": null,
+    "nutrition": {
+      "calories": 34,
+      "protein": 2.2,
+      "carbs": 6.8,
+      "fat": 0.5,
+      "fiber": 2.5,
+      "sugar": 2.4,
+      "sodium": 9,
+      "vitamins": { "niacin": 3.9, "vitamin_b6": 0.3, "folate": 18 },
+      "minerals": { "copper": 0.1, "selenium": 5.7, "potassium": 304 }
+    }
+  },
+  {
+    "id": "sesame-oil-1",
+    "name": "Sesame Oil",
+    "chineseName": "香油",
+    "brand": null,
+    "nutrition": {
+      "calories": 120,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 13.6,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 0,
+      "vitamins": { "vitamin_e": 0.2, "vitamin_k": 1.8 },
+      "minerals": { "calcium": 0, "iron": 0 }
+    }
+  }
+]

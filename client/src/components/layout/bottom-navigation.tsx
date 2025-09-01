@@ -1,9 +1,11 @@
 import { Heart, Book, PieChart } from "lucide-react";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function BottomNavigation() {
   const [location] = useLocation();
+  const { t } = useLanguage();
 
   const isActive = (path: string) => {
     if (path === "/" || path === "/health") {
@@ -25,7 +27,7 @@ export default function BottomNavigation() {
             data-testid="nav-health"
           >
             <Heart className="text-xl mb-1 w-6 h-6" />
-            <span className="text-xs font-medium">Health</span>
+            <span className="text-xs font-medium">{t('health')}</span>
           </button>
         </Link>
         
@@ -39,7 +41,7 @@ export default function BottomNavigation() {
             data-testid="nav-diary"
           >
             <Book className="text-xl mb-1 w-6 h-6" />
-            <span className="text-xs font-medium">Diary</span>
+            <span className="text-xs font-medium">{t('diary')}</span>
           </button>
         </Link>
         
@@ -53,7 +55,7 @@ export default function BottomNavigation() {
             data-testid="nav-insights"
           >
             <PieChart className="text-xl mb-1 w-6 h-6" />
-            <span className="text-xs font-medium">Insights</span>
+            <span className="text-xs font-medium">{t('insights')}</span>
           </button>
         </Link>
       </div>

@@ -12,9 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { UserCircle, Stethoscope, AlertTriangle, Pill, Cigarette, Plus, X } from "lucide-react";
 import { useHealthProfile } from "@/hooks/use-health-profile";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function HealthSurvey() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const { createHealthProfile, isCreating } = useHealthProfile();
   const [conditions, setConditions] = useState<string[]>([]);
   const [allergies, setAllergies] = useState<string[]>([]);
@@ -51,12 +53,12 @@ export default function HealthSurvey() {
       
       await createHealthProfile(profileData);
       toast({
-        title: "Health Profile Saved",
-        description: "Your health information has been successfully saved.",
+        title: t('profileSaved'),
+        description: t('profileSaved'),
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('error'),
         description: "Failed to save health profile. Please try again.",
         variant: "destructive",
       });
@@ -111,7 +113,7 @@ export default function HealthSurvey() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary-custom to-green-600 text-white p-6 mx-4 mt-4 rounded-xl">
-        <h2 className="text-xl font-semibold mb-2">Complete Your Health Profile</h2>
+        <h2 className="text-xl font-semibold mb-2">{t('healthProfile')}</h2>
         <p className="text-green-100 text-sm">Help us provide personalized nutrition insights</p>
         <div className="mt-4 bg-white/20 rounded-lg p-3">
           <div className="flex items-center justify-between text-sm">
@@ -133,12 +135,12 @@ export default function HealthSurvey() {
           <CardContent className="p-5">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <UserCircle className="text-primary-custom mr-2" />
-              Personal Information
+              {t('personalInfo')}
             </h3>
             
             <div className="space-y-4">
               <div>
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">{t('name')}</Label>
                 <Input
                   id="name"
                   {...form.register("name")}

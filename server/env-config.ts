@@ -5,6 +5,7 @@ const envSchema = z.object({
   // Core Application
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().transform(Number).pipe(z.number().min(1).max(65535)).default('5000'),
+  // Bind to 0.0.0.0 in production for cloud platforms (Render, Railway, etc.)
   HOST: z.string().default(process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
 
   // Application Info

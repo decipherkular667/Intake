@@ -18,3 +18,17 @@ server/data/food-nutrients.xlsx
 # Logs
 *.log
 logs/
+# Temporary and data files
+cookies.txt
+project-structure.txt
+server/data/FoodData_Central*
+*.csv
+*.xlsx
+
+# Python/Jupyter artifacts
+*.ipynb
+.ipynb_checkpoints/
+*_env/
+gemini_env/
+venv/
+__pycache__/

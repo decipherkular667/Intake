@@ -1,0 +1,1 @@
+ALTER TABLE `health_profiles` ADD `gender` text;

@@ -1,28 +1,40 @@
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { foodApi } from "@/lib/api";
-import type { FoodEntry, InsertFoodEntry } from "@shared/schema";
+import type { FoodEntry, InsertFoodEntry } from "@shared/schema-sqlite";
+import { useAuth } from "./use-auth";
+import { useLanguage } from "@/contexts/language-context";
 
-export function useFoodDiary(profileId: string = "default", date?: string) {
+export function useFoodDiary(date?: string) {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { language } = useLanguage();
   const currentDate = date || new Date().toISOString().split('T')[0];
 
   const { data: foodEntries = [], isLoading } = useQuery({
-    queryKey: ["/api/food-entries", profileId, currentDate],
+    queryKey: ["/api/food-entries", currentDate, language],
+    enabled: !!user?.id,
     queryFn: async () => {
-      const response = await apiRequest("GET", `/api/food-entries/${profileId}?date=${currentDate}`);
-      return response.json() as Promise<FoodEntry[]>;
+      const response = await apiRequest("GET", `/api/food-entries?date=${currentDate}&lang=${language}`);
+      const result = await response.json();
+      // Handle new response format: {success: true, data: FoodEntry[]}
+      return (result.data || result) as FoodEntry[];
     },
+    retry: false,
   });
 
   const { mutateAsync: addFoodEntry, isPending: isAdding } = useMutation({
-    mutationFn: async (data: InsertFoodEntry) => {
+    mutationFn: async (data: Omit<InsertFoodEntry, 'profileId'>) => {
       const response = await apiRequest("POST", "/api/food-entries", data);
-      return response.json() as Promise<FoodEntry>;
+      const result = await response.json();
+      // Handle new response format: {success: true, data: FoodEntry}
+      return (result.data || result) as FoodEntry;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/food-entries", profileId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/insights", profileId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/food-entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/insights"] });
+      queryClient.invalidateQueries({ queryKey: ["insights-section"] }); // Invalidate cached AI sections
     },
   });
 
@@ -32,23 +44,24 @@ export function useFoodDiary(profileId: string = "default", date?: string) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/food-entries", profileId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/insights", profileId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/food-entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/insights"] });
+      queryClient.invalidateQueries({ queryKey: ["insights-section"] }); // Invalidate cached AI sections
     },
   });
 
-  const searchFood = async (query: string) => {
+  const searchFood = useCallback(async (query: string) => {
     const result = await foodApi.search(query);
     // Include source information in the returned foods
     return result.foods.map((food: any) => ({
       ...food,
       source: result.source || 'local'
     }));
-  };
+  }, []);
 
-  const getNutrition = async (foodId: string) => {
+  const getNutrition = useCallback(async (foodId: string) => {
     return await foodApi.getNutrition(foodId);
-  };
+  }, []);
 
   return {
     foodEntries,

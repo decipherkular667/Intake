@@ -805,5 +805,92 @@
       "vitamins": { "vitamin_e": 0.2, "vitamin_k": 1.8 },
       "minerals": { "calcium": 0, "iron": 0 }
     }
+  },
+  {
+    "id": "beer-1",
+    "name": "Beer",
+    "chineseName": "啤酒",
+    "brand": null,
+    "nutrition": {
+      "calories": 43,
+      "protein": 0.5,
+      "carbs": 3.6,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 4,
+      "vitamins": {
+        "vitamin_b3": 0.9,
+        "vitamin_b6": 0.046,
+        "folate": 21,
+        "vitamin_b2": 0.025,
+        "vitamin_b12": 0.02,
+        "vitamin_b1": 0.005,
+        "vitamin_c": 0,
+        "vitamin_a": 0,
+        "vitamin_e": 0,
+        "vitamin_k": 0
+      },
+      "minerals": {
+        "potassium": 27,
+        "magnesium": 6,
+        "calcium": 4,
+        "phosphorus": 14,
+        "iron": 0.02,
+        "zinc": 0.01,
+        "copper": 0.006,
+        "manganese": 0.008,
+        "selenium": 0.6
+      },
+      "alcohol": 4.5,
+      "bioactive": {
+        "hops_compounds": 1,
+        "polyphenols": 1,
+        "ethanol": 4.5
+      }
+    }
+  },
+  {
+    "id": "vodka-1",
+    "name": "Vodka",
+    "chineseName": "伏特加",
+    "brand": null,
+    "nutrition": {
+      "calories": 231,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 1,
+      "vitamins": {
+        "vitamin_c": 0,
+        "vitamin_a": 0,
+        "vitamin_e": 0,
+        "vitamin_k": 0,
+        "vitamin_b1": 0,
+        "vitamin_b2": 0,
+        "vitamin_b3": 0,
+        "vitamin_b6": 0,
+        "folate": 0,
+        "vitamin_b12": 0
+      },
+      "minerals": {
+        "calcium": 0,
+        "iron": 0.04,
+        "magnesium": 0,
+        "phosphorus": 1,
+        "potassium": 1,
+        "zinc": 0.04,
+        "copper": 0,
+        "manganese": 0,
+        "selenium": 0
+      },
+      "alcohol": 40,
+      "bioactive": {
+        "ethanol": 40,
+        "congeners": 1
+      }
+    }
   }
 ]

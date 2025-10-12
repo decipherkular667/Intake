@@ -27,7 +27,7 @@ export default function BottomNavigation() {
             data-testid="nav-health"
           >
             <Heart className="text-xl mb-1 w-6 h-6" />
-            <span className="text-xs font-medium">{t('health')}</span>
+            <span className="text-xs font-medium">{t('profile')}</span>
           </button>
         </Link>
         

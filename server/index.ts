@@ -109,26 +109,35 @@ app.use((req, res, next) => {
     // Use the app directly since registerRoutes modifies it in place
     const finalApp = app;
 
-    // Get port configuration from validated environment
-    const port = env.PORT;
-    const host = env.HOST;
+    // Setup development/production serving BEFORE starting server
+    let server;
+    if (isDevelopment) {
+      // Get port configuration from validated environment
+      const port = env.PORT;
+      const host = env.HOST;
 
-    // Create server instance
-    const server = finalApp.listen(port, host, () => {
-      console.log(`🌐 Server running on http://${host}:${port}`);
-      if (isDevelopment) {
+      // Create server instance for Vite
+      server = finalApp.listen(port, host, () => {
+        console.log(`🌐 Server running on http://${host}:${port}`);
         console.log(`📊 Health check: http://${host}:${port}/api/health`);
         if (env.ENABLE_DOCS) {
           console.log(`📖 API docs would be available here (if implemented)`);
         }
-      }
-    });
+      });
 
-    // Setup development/production serving (MUST be before error handlers!)
-    if (isDevelopment) {
       await setupVite(finalApp, server);
     } else {
+      // Setup static file serving BEFORE starting server
       serveStatic(finalApp);
+
+      // Get port configuration from validated environment
+      const port = env.PORT;
+      const host = env.HOST;
+
+      // Create server instance
+      server = finalApp.listen(port, host, () => {
+        console.log(`🌐 Server running on http://${host}:${port}`);
+      });
     }
 
     // Error handling middleware (order matters! Must be AFTER Vite setup)

@@ -2,7 +2,8 @@ import session from 'express-session';
 import { env, isDevelopment } from './env-config';
 import MemoryStore from 'memorystore';
 import connectPgSimple from 'connect-pg-simple';
-import { neon } from '@neondatabase/serverless';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 // Create session store based on environment
 function createSessionStore() {
@@ -15,11 +16,16 @@ function createSessionStore() {
   } else {
     // Use PostgreSQL store for production
     const PgSession = connectPgSimple(session);
-    const pgClient = neon(env.DATABASE_URL);
+    const pool = new Pool({
+      connectionString: env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false // Required for most cloud PostgreSQL providers
+      }
+    });
 
     return new PgSession({
-      pool: pgClient as any,
-      tableName: 'session', // This table will be created automatically
+      pool: pool,
+      tableName: 'session',
       createTableIfMissing: true,
     });
   }

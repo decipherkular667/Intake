@@ -88,10 +88,21 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Add logging middleware to debug static file requests
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/assets') || req.path.endsWith('.css') || req.path.endsWith('.js')) {
+      console.log(`🔍 Static file request: ${req.method} ${req.path}`);
+    }
+    next();
+  });
+
   app.use(express.static(distPath, {
     maxAge: '1d',
     etag: true,
     lastModified: true,
+    setHeaders: (res, filepath) => {
+      console.log(`📦 Serving static file: ${filepath}`);
+    }
   }));
 
   // fall through to index.html if the file doesn't exist (for SPA routing)
@@ -101,6 +112,7 @@ export function serveStatic(app: Express) {
     if (req.path.startsWith('/api')) {
       return next();
     }
+    console.log(`🏠 Serving index.html for: ${req.path}`);
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

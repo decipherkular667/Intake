@@ -38,12 +38,14 @@ export const sessionConfig = session({
   saveUninitialized: false,
   store: createSessionStore(),
   cookie: {
-    secure: env.NODE_ENV === 'production' && !isDevelopment, // HTTPS only in production
+    secure: env.NODE_ENV === 'production', // HTTPS only in production
     httpOnly: true, // Prevent XSS attacks
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     sameSite: 'lax', // CSRF protection
+    domain: env.NODE_ENV === 'production' ? undefined : 'localhost', // Let browser handle domain in production
   },
   name: 'sessionId', // Don't use default 'connect.sid'
+  proxy: env.NODE_ENV === 'production', // Trust proxy in production (Render uses a proxy)
 });
 
 // Session types for TypeScript

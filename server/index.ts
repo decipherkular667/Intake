@@ -19,6 +19,11 @@ import { healthMonitor } from "./health-monitor";
 
 const app = express();
 
+// Trust proxy in production (Render uses a proxy)
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 app.use(cors({
   origin: env.CORS_ORIGIN.split(',').map(origin => origin.trim()),
   credentials: true

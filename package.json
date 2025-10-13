@@ -11,6 +11,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
+    "db:push:prod": "drizzle-kit push --config=drizzle.config.prod.ts",
     "db:studio": "drizzle-kit studio",
     "db:init": "tsx scripts/init-db.ts",
     "db:init:seed": "tsx scripts/init-db.ts --seed",

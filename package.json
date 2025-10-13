@@ -13,6 +13,7 @@
     "db:push": "drizzle-kit push",
     "db:push:prod": "drizzle-kit push --config=drizzle.config.prod.ts --force",
     "db:migrate:prod": "node scripts/migrate-production.js",
+    "db:setup:prod": "node scripts/create-pg-tables.js",
     "db:studio": "drizzle-kit studio",
     "db:init": "tsx scripts/init-db.ts",
     "db:init:seed": "tsx scripts/init-db.ts --seed",

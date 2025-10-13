@@ -31,6 +31,17 @@ if (isDevelopment || !env.DATABASE_URL || env.DATABASE_URL.includes('sqlite')) {
 
   db = drizzlePostgres(pool, { schema });
   console.log('🔌 PostgreSQL production database connected');
+
+  // Debug: Check what tables exist
+  pool.query(`
+    SELECT table_name
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
+  `).then(result => {
+    console.log('📋 Tables in database:', result.rows.map(r => r.table_name));
+  }).catch(err => {
+    console.error('❌ Error checking tables:', err.message);
+  });
 }
 
 export { db };

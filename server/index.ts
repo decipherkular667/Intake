@@ -125,7 +125,7 @@ app.use((req, res, next) => {
     });
 
     // Setup development/production serving (MUST be before error handlers!)
-    if (finalApp.get("env") === "development") {
+    if (isDevelopment) {
       await setupVite(finalApp, server);
     } else {
       serveStatic(finalApp);

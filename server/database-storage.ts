@@ -80,17 +80,15 @@ export class DatabaseStorage {
         throw new DatabaseError('Name is required to create health profile');
       }
 
-      const isSQLite = !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('sqlite');
-
       const profileData: any = { ...insertProfile };
-      if (isSQLite) {
-        // SQLite needs JSON.stringify for arrays
-        profileData.medicalConditions = JSON.stringify(insertProfile.medicalConditions || []);
-        profileData.allergies = JSON.stringify(insertProfile.allergies || []);
-        profileData.medications = JSON.stringify(insertProfile.medications || []);
-        profileData.dietaryRestrictions = JSON.stringify(insertProfile.dietaryRestrictions || []);
-        profileData.healthGoals = JSON.stringify(insertProfile.healthGoals || []);
-      }
+
+      // Always stringify arrays for Drizzle's JSON mode, regardless of database type
+      // Drizzle schema uses text("field", { mode: 'json' }) which expects JSON strings
+      profileData.medicalConditions = JSON.stringify(insertProfile.medicalConditions || []);
+      profileData.allergies = JSON.stringify(insertProfile.allergies || []);
+      profileData.medications = JSON.stringify(insertProfile.medications || []);
+      profileData.dietaryRestrictions = JSON.stringify(insertProfile.dietaryRestrictions || []);
+      profileData.healthGoals = JSON.stringify(insertProfile.healthGoals || []);
       profileData.smokingStatus = insertProfile.smokingStatus || 'never';
 
       const result = await db.insert(healthProfiles).values(profileData).returning();
@@ -106,29 +104,23 @@ export class DatabaseStorage {
   async updateHealthProfile(id: string, profile: Partial<InsertHealthProfile>): Promise<HealthProfile | undefined> {
     const profileData: any = { ...profile };
 
-    // PostgreSQL handles JSON natively, SQLite needs string conversion
-    // Check if we're using SQLite (development) by checking if DATABASE_URL contains sqlite
-    const isSQLite = !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('sqlite');
-
-    if (isSQLite) {
-      // Convert arrays to JSON strings for SQLite storage
-      if (profileData.medicalConditions && Array.isArray(profileData.medicalConditions)) {
-        profileData.medicalConditions = JSON.stringify(profileData.medicalConditions);
-      }
-      if (profileData.allergies && Array.isArray(profileData.allergies)) {
-        profileData.allergies = JSON.stringify(profileData.allergies);
-      }
-      if (profileData.medications && Array.isArray(profileData.medications)) {
-        profileData.medications = JSON.stringify(profileData.medications);
-      }
-      if (profileData.dietaryRestrictions && Array.isArray(profileData.dietaryRestrictions)) {
-        profileData.dietaryRestrictions = JSON.stringify(profileData.dietaryRestrictions);
-      }
-      if (profileData.healthGoals && Array.isArray(profileData.healthGoals)) {
-        profileData.healthGoals = JSON.stringify(profileData.healthGoals);
-      }
+    // Always stringify arrays for Drizzle's JSON mode, regardless of database type
+    // Drizzle schema uses text("field", { mode: 'json' }) which expects JSON strings
+    if (profileData.medicalConditions && Array.isArray(profileData.medicalConditions)) {
+      profileData.medicalConditions = JSON.stringify(profileData.medicalConditions);
     }
-    // For PostgreSQL, arrays are stored as-is
+    if (profileData.allergies && Array.isArray(profileData.allergies)) {
+      profileData.allergies = JSON.stringify(profileData.allergies);
+    }
+    if (profileData.medications && Array.isArray(profileData.medications)) {
+      profileData.medications = JSON.stringify(profileData.medications);
+    }
+    if (profileData.dietaryRestrictions && Array.isArray(profileData.dietaryRestrictions)) {
+      profileData.dietaryRestrictions = JSON.stringify(profileData.dietaryRestrictions);
+    }
+    if (profileData.healthGoals && Array.isArray(profileData.healthGoals)) {
+      profileData.healthGoals = JSON.stringify(profileData.healthGoals);
+    }
 
     const result = await db.update(healthProfiles)
       .set({

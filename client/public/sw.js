@@ -1,6 +1,6 @@
 // Service Worker for IntakeAI Health PWA
-const CACHE_NAME = 'intakeai-health-v1';
-const RUNTIME_CACHE = 'intakeai-runtime-v1';
+const CACHE_NAME = 'intakeai-health-v2';
+const RUNTIME_CACHE = 'intakeai-runtime-v2';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

@@ -1524,7 +1524,7 @@ export function registerRoutes(app: Express) {
     sendSuccess(res, { recommendations });
   }));
 
-  app.post("/api/insights/:profileId/:date/weekly", wrapAsync(async (req: Request, res: Response) => {
+  app.post("/api/insights/:profileId/:date/weekly", requireAuth, wrapAsync(async (req: Request, res: Response) => {
     const userId = req.user!.id;
 
     // Check rate limit

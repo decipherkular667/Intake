@@ -3,16 +3,31 @@ import { drizzle as drizzlePostgres } from 'drizzle-orm/node-postgres';
 import Database from 'better-sqlite3';
 import pkg from 'pg';
 const { Pool } = pkg;
-import * as schema from '../shared/schema-sqlite';
+import * as schemaSqlite from '../shared/schema-sqlite';
+import * as schemaPostgres from '../shared/schema-postgres';
 import { env, isDevelopment } from './env-config';
 
 // Use SQLite for development, PostgreSQL for production
 let db: any;
+export let isPostgres: boolean;
+export let healthProfiles: any;
+export let foodEntries: any;
+export let insights: any;
+export let users: any;
+export let rateLimits: any;
 
 if (isDevelopment || !env.DATABASE_URL || env.DATABASE_URL.includes('sqlite')) {
   // SQLite for development
+  isPostgres = false;
   const sqlite = new Database('dev-database.sqlite');
-  db = drizzleSqlite(sqlite, { schema });
+  db = drizzleSqlite(sqlite, { schema: schemaSqlite });
+
+  // Export SQLite schema
+  healthProfiles = schemaSqlite.healthProfiles;
+  foodEntries = schemaSqlite.foodEntries;
+  insights = schemaSqlite.insights;
+  users = schemaSqlite.users;
+  rateLimits = schemaSqlite.rateLimits;
 
   try {
     sqlite.exec('PRAGMA foreign_keys = ON;');
@@ -22,6 +37,7 @@ if (isDevelopment || !env.DATABASE_URL || env.DATABASE_URL.includes('sqlite')) {
   }
 } else {
   // PostgreSQL for production
+  isPostgres = true;
   const pool = new Pool({
     connectionString: env.DATABASE_URL,
     ssl: {
@@ -29,7 +45,15 @@ if (isDevelopment || !env.DATABASE_URL || env.DATABASE_URL.includes('sqlite')) {
     }
   });
 
-  db = drizzlePostgres(pool, { schema });
+  db = drizzlePostgres(pool, { schema: schemaPostgres });
+
+  // Export PostgreSQL schema
+  healthProfiles = schemaPostgres.healthProfiles;
+  foodEntries = schemaPostgres.foodEntries;
+  insights = schemaPostgres.insights;
+  users = schemaPostgres.users;
+  rateLimits = schemaPostgres.rateLimits;
+
   console.log('🔌 PostgreSQL production database connected');
 
   // Debug: Check what tables exist
@@ -46,5 +70,5 @@ if (isDevelopment || !env.DATABASE_URL || env.DATABASE_URL.includes('sqlite')) {
 
 export { db };
 
-// Export schema for convenience
-export * from '../shared/schema-sqlite';
+// Export types from PostgreSQL schema (types are compatible)
+export * from '../shared/schema-postgres';

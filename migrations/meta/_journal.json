@@ -1,26 +1,12 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1758950384485,
-      "tag": "0000_fat_zarek",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1760098130889,
-      "tag": "0001_nosy_falcon",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1760120791510,
-      "tag": "0002_bright_george_stacy",
+      "version": "7",
+      "when": 1760627487324,
+      "tag": "0000_futuristic_amazoness",
       "breakpoints": true
     }
   ]

@@ -1,7 +1,7 @@
 // Service Worker for IntakeAI Health PWA
-// Version: 2025-10-16-13:55 - Force update
-const CACHE_NAME = 'intakeai-health-v3';
-const RUNTIME_CACHE = 'intakeai-runtime-v3';
+// Version: 2025-10-16-fix-offline - Fix offline detection
+const CACHE_NAME = 'intakeai-health-v4';
+const RUNTIME_CACHE = 'intakeai-runtime-v4';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
@@ -52,18 +52,25 @@ self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('/api/')) {
     event.respondWith(
       fetch(event.request)
-        .catch(() => {
-          // If API fails and offline, return offline message
-          return new Response(
-            JSON.stringify({
-              success: false,
-              error: 'You are offline. Please check your internet connection.'
-            }),
-            {
-              status: 503,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
+        .catch((error) => {
+          // Only return offline message if truly offline (not just a network error)
+          // Check if the browser is actually offline
+          if (!navigator.onLine) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                error: 'You are offline. Please check your internet connection.'
+              }),
+              {
+                status: 503,
+                headers: { 'Content-Type': 'application/json' }
+              }
+            );
+          }
+
+          // For other fetch errors (like CORS, network issues), let them propagate
+          // so the real error can be seen
+          throw error;
         })
     );
     return;

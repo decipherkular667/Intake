@@ -1429,7 +1429,7 @@ export function registerRoutes(app: Express) {
     const userId = (req as any).user?.id;
 
     // Check rate limit
-    const rateCheck = checkRateLimit(userId);
+    const rateCheck = await checkRateLimit(userId);
     if (!rateCheck.allowed) {
       return res.status(429).json({
         success: false,
@@ -1462,7 +1462,7 @@ export function registerRoutes(app: Express) {
     const userId = (req as any).user?.id;
 
     // Check rate limit
-    const rateCheck = checkRateLimit(userId);
+    const rateCheck = await checkRateLimit(userId);
     if (!rateCheck.allowed) {
       return res.status(429).json({
         success: false,
@@ -1495,7 +1495,7 @@ export function registerRoutes(app: Express) {
     const userId = (req as any).user?.id;
 
     // Check rate limit
-    const rateCheck = checkRateLimit(userId);
+    const rateCheck = await checkRateLimit(userId);
     if (!rateCheck.allowed) {
       return res.status(429).json({
         success: false,
@@ -1528,7 +1528,7 @@ export function registerRoutes(app: Express) {
     const userId = (req as any).user?.id;
 
     // Check rate limit
-    const rateCheck = checkRateLimit(userId);
+    const rateCheck = await checkRateLimit(userId);
     if (!rateCheck.allowed) {
       return res.status(429).json({
         success: false,

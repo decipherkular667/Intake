@@ -20,12 +20,12 @@ const WHITELIST = [
  * @param userId - User ID to check
  * @returns { allowed: boolean, retryAfter?: number, limit?: string }
  */
-export function checkRateLimit(userId: string): {
+export async function checkRateLimit(userId: string): Promise<{
   allowed: boolean;
   retryAfter?: number;
   limit?: string;
   remaining?: { minute: number; hour: number; day: number };
-} {
+}> {
   // Check if user is whitelisted (exempt from rate limits)
   if (WHITELIST.includes(userId)) {
     return {
@@ -41,11 +41,12 @@ export function checkRateLimit(userId: string): {
   const now = Date.now();
 
   // Get or create user's rate limit record from database
-  let rateLimit = db.select().from(rateLimits).where(eq(rateLimits.userId, userId)).get();
+  const rateLimitResult = await db.select().from(rateLimits).where(eq(rateLimits.userId, userId));
+  let rateLimit = rateLimitResult[0];
 
   if (!rateLimit) {
     // Create new rate limit record
-    db.insert(rateLimits).values({
+    const insertResult = await db.insert(rateLimits).values({
       userId,
       minuteCount: 0,
       minuteResetAt: now + 60 * 1000,
@@ -55,9 +56,9 @@ export function checkRateLimit(userId: string): {
       dayResetAt: now + 24 * 60 * 60 * 1000,
       totalRequests: 0,
       lastRequestAt: null,
-    }).run();
+    }).returning();
 
-    rateLimit = db.select().from(rateLimits).where(eq(rateLimits.userId, userId)).get()!;
+    rateLimit = insertResult[0];
   }
 
   // Reset counters if time windows have passed
@@ -129,7 +130,7 @@ export function checkRateLimit(userId: string): {
   hourCount++;
   dayCount++;
 
-  db.update(rateLimits)
+  await db.update(rateLimits)
     .set({
       minuteCount,
       minuteResetAt,
@@ -139,10 +140,9 @@ export function checkRateLimit(userId: string): {
       dayResetAt,
       totalRequests: rateLimit.totalRequests + 1,
       lastRequestAt: now,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     })
-    .where(eq(rateLimits.userId, userId))
-    .run();
+    .where(eq(rateLimits.userId, userId));
 
   return {
     allowed: true,
@@ -157,13 +157,14 @@ export function checkRateLimit(userId: string): {
 /**
  * Get current usage for a user (for debugging/monitoring)
  */
-export function getUserUsage(userId: string): {
+export async function getUserUsage(userId: string): Promise<{
   minute: number;
   hour: number;
   day: number;
   total: number;
-} | null {
-  const rateLimit = db.select().from(rateLimits).where(eq(rateLimits.userId, userId)).get();
+} | null> {
+  const rateLimitResult = await db.select().from(rateLimits).where(eq(rateLimits.userId, userId));
+  const rateLimit = rateLimitResult[0];
   if (!rateLimit) return null;
 
   const now = Date.now();
@@ -179,19 +180,19 @@ export function getUserUsage(userId: string): {
 /**
  * Clear rate limits for a user (admin function)
  */
-export function clearUserLimits(userId: string): void {
-  db.delete(rateLimits).where(eq(rateLimits.userId, userId)).run();
+export async function clearUserLimits(userId: string): Promise<void> {
+  await db.delete(rateLimits).where(eq(rateLimits.userId, userId));
 }
 
 /**
  * Get all active users with rate limits (monitoring)
  */
-export function getActiveUsers(): { userId: string; usage: ReturnType<typeof getUserUsage> }[] {
-  const allLimits = db.select().from(rateLimits).all();
-  const active: { userId: string; usage: ReturnType<typeof getUserUsage> }[] = [];
+export async function getActiveUsers(): Promise<{ userId: string; usage: Awaited<ReturnType<typeof getUserUsage>> }[]> {
+  const allLimits = await db.select().from(rateLimits);
+  const active: { userId: string; usage: Awaited<ReturnType<typeof getUserUsage>> }[] = [];
 
   for (const limit of allLimits) {
-    const usage = getUserUsage(limit.userId);
+    const usage = await getUserUsage(limit.userId);
     if (usage && (usage.minute > 0 || usage.hour > 0 || usage.day > 0)) {
       active.push({ userId: limit.userId, usage });
     }
@@ -201,14 +202,14 @@ export function getActiveUsers(): { userId: string; usage: ReturnType<typeof get
 }
 
 // Clean up stale entries every hour to prevent database bloat
-setInterval(() => {
+setInterval(async () => {
   const now = Date.now();
-  const allLimits = db.select().from(rateLimits).all();
+  const allLimits = await db.select().from(rateLimits);
 
   for (const limit of allLimits) {
     // If all time windows have expired and no recent activity, delete the record
     if (now > limit.dayResetAt && limit.totalRequests === 0) {
-      db.delete(rateLimits).where(eq(rateLimits.userId, limit.userId)).run();
+      await db.delete(rateLimits).where(eq(rateLimits.userId, limit.userId));
     }
   }
 }, 60 * 60 * 1000); // Run every hour

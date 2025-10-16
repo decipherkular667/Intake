@@ -1425,8 +1425,8 @@ export function registerRoutes(app: Express) {
   }));
 
   // On-demand section endpoints for individual insight requests
-  app.post("/api/insights/:profileId/:date/conflicts", wrapAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+  app.post("/api/insights/:profileId/:date/conflicts", requireAuth, wrapAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
 
     // Check rate limit
     const rateCheck = await checkRateLimit(userId);
@@ -1458,8 +1458,8 @@ export function registerRoutes(app: Express) {
     sendSuccess(res, { conflicts });
   }));
 
-  app.post("/api/insights/:profileId/:date/recommendations", wrapAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+  app.post("/api/insights/:profileId/:date/recommendations", requireAuth, wrapAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
 
     // Check rate limit
     const rateCheck = await checkRateLimit(userId);
@@ -1491,8 +1491,8 @@ export function registerRoutes(app: Express) {
     sendSuccess(res, { recommendations });
   }));
 
-  app.post("/api/insights/:profileId/:date/tcm", wrapAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+  app.post("/api/insights/:profileId/:date/tcm", requireAuth, wrapAsync(async (req: Request, res: Response) => {
+    const userId = req.user!.id;
 
     // Check rate limit
     const rateCheck = await checkRateLimit(userId);
@@ -1525,7 +1525,7 @@ export function registerRoutes(app: Express) {
   }));
 
   app.post("/api/insights/:profileId/:date/weekly", wrapAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = req.user!.id;
 
     // Check rate limit
     const rateCheck = await checkRateLimit(userId);

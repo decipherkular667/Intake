@@ -125,7 +125,9 @@ export class DatabaseStorage {
     const result = await db.update(healthProfiles)
       .set({
         ...profileData,
-        updatedAt: new Date().toISOString(),
+        // PostgreSQL needs Date object, SQLite needs ISO string
+        // Drizzle handles the conversion based on schema
+        updatedAt: new Date(),
       })
       .where(eq(healthProfiles.id, id))
       .returning();

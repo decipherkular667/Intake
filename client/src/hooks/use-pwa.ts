@@ -24,10 +24,31 @@ export function usePWA() {
           .then((registration) => {
             console.log('[PWA] Service Worker registered:', registration);
 
+            // Force immediate update check
+            registration.update().then(() => {
+              console.log('[PWA] Checked for service worker updates');
+            });
+
             // Check for updates periodically
             setInterval(() => {
               registration.update();
             }, 60 * 60 * 1000); // Check every hour
+
+            // Listen for new service worker
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              console.log('[PWA] New service worker found, updating...');
+
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New service worker available, prompt user to reload
+                    console.log('[PWA] New content available, please refresh');
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  }
+                });
+              }
+            });
           })
           .catch((error) => {
             console.error('[PWA] Service Worker registration failed:', error);

@@ -1,6 +1,7 @@
 // Service Worker for IntakeAI Health PWA
-const CACHE_NAME = 'intakeai-health-v2';
-const RUNTIME_CACHE = 'intakeai-runtime-v2';
+// Version: 2025-10-16-13:55 - Force update
+const CACHE_NAME = 'intakeai-health-v3';
+const RUNTIME_CACHE = 'intakeai-runtime-v3';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
@@ -21,20 +22,22 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up ALL caches aggressively
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activating...');
+  console.log('[Service Worker] Activating and clearing ALL caches...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
+      // Delete ALL caches to force fresh fetch
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE) {
-            console.log('[Service Worker] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          console.log('[Service Worker] Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      console.log('[Service Worker] All caches cleared, claiming clients');
+      return self.clients.claim();
+    })
   );
 });
 

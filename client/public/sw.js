@@ -1,7 +1,7 @@
 // Service Worker for IntakeAI Health PWA
-// Version: 2025-10-16-fix-offline - Fix offline detection
-const CACHE_NAME = 'intakeai-health-v4';
-const RUNTIME_CACHE = 'intakeai-runtime-v4';
+// Version: 2025-10-16-v5-force - Force service worker update
+const CACHE_NAME = 'intakeai-health-v5';
+const RUNTIME_CACHE = 'intakeai-runtime-v5';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
@@ -9,16 +9,22 @@ const PRECACHE_URLS = [
   '/index.html',
 ];
 
-// Install event - cache essential assets
+// Install event - cache essential assets and force update
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing...');
+  console.log('[Service Worker] Installing v5 - forcing update...');
+  // Skip waiting immediately to force activation
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('[Service Worker] Precaching app shell');
-        return cache.addAll(PRECACHE_URLS);
+        return cache.addAll(PRECACHE_URLS).catch(err => {
+          console.warn('[Service Worker] Failed to precache some assets:', err);
+          // Don't fail the installation if precaching fails
+          return Promise.resolve();
+        });
       })
-      .then(() => self.skipWaiting())
   );
 });
 

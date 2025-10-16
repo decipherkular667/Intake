@@ -48,22 +48,27 @@ export class DatabaseStorage {
     const result = await db.select().from(healthProfiles).where(eq(healthProfiles.userId, userId));
     return result.map(profile => ({
       ...profile,
-      medicalConditions: typeof profile.medicalConditions === 'string'
-        ? JSON.parse(profile.medicalConditions)
-        : profile.medicalConditions || [],
-      allergies: typeof profile.allergies === 'string'
-        ? JSON.parse(profile.allergies)
-        : profile.allergies || [],
-      medications: typeof profile.medications === 'string'
-        ? JSON.parse(profile.medications)
-        : profile.medications || [],
-      dietaryRestrictions: typeof profile.dietaryRestrictions === 'string'
-        ? JSON.parse(profile.dietaryRestrictions)
-        : profile.dietaryRestrictions || [],
-      healthGoals: typeof profile.healthGoals === 'string'
-        ? JSON.parse(profile.healthGoals)
-        : profile.healthGoals || [],
+      medicalConditions: this.parseJsonField(profile.medicalConditions),
+      allergies: this.parseJsonField(profile.allergies),
+      medications: this.parseJsonField(profile.medications),
+      dietaryRestrictions: this.parseJsonField(profile.dietaryRestrictions),
+      healthGoals: this.parseJsonField(profile.healthGoals),
     }));
+  }
+
+  // Helper to safely parse JSON fields (handles both SQLite strings and PostgreSQL JSON)
+  private parseJsonField(field: any): any[] {
+    if (Array.isArray(field)) {
+      return field; // Already an array (PostgreSQL native JSON)
+    }
+    if (typeof field === 'string') {
+      try {
+        return JSON.parse(field); // SQLite JSON string
+      } catch {
+        return []; // Invalid JSON, return empty array
+      }
+    }
+    return []; // null, undefined, or other types
   }
 
   async createHealthProfile(insertProfile: InsertHealthProfile & {userId: string}): Promise<HealthProfile> {

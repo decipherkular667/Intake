@@ -553,9 +553,16 @@ class EnhancedTranslationBatcher {
     try {
       // Use your existing Google Translate service
       const GOOGLE_TRANSLATE_API_KEY = import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY;
-      
+
       if (!GOOGLE_TRANSLATE_API_KEY) {
-        throw new Error('Translation API key not found');
+        console.warn('Translation API key not configured, falling back to original text');
+        // Fallback: resolve with original text
+        textsToTranslate.forEach((text) => {
+          const pending = this.pendingTranslations.get(text) || [];
+          pending.forEach(({ resolve }) => resolve(text));
+          this.pendingTranslations.delete(text);
+        });
+        return;
       }
 
       const response = await fetch(

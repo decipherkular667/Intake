@@ -794,25 +794,48 @@ export function registerRoutes(app: Express) {
 
   // Health Profile Routes (Protected)
   app.post("/api/health-profile", requireAuth, validateSchema(insertHealthProfileSchema), wrapAsync(async (req, res) => {
-    // Add userId to the profile data
-    const profileData = {
-      ...req.body,
-      userId: req.user!.id
-    };
-    const profile = await storage.createHealthProfile(profileData);
-    sendSuccess(res, profile, 'Health profile created successfully', 201);
+    try {
+      console.log('Creating health profile for user:', req.user!.id);
+      console.log('Profile data:', JSON.stringify(req.body, null, 2));
+
+      // Add userId to the profile data
+      const profileData = {
+        ...req.body,
+        userId: req.user!.id
+      };
+
+      const profile = await storage.createHealthProfile(profileData);
+      console.log('Health profile created successfully:', profile.id);
+      sendSuccess(res, profile, 'Health profile created successfully', 201);
+    } catch (error) {
+      console.error('Error creating health profile:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId: req.user!.id,
+        body: req.body
+      });
+      throw error; // Re-throw to let error handler deal with it
+    }
   }));
   // Batch Translation Route
   app.post("/api/translate-batch", translateBatch);
 
   // Get current user's health profile
   app.get("/api/health-profile", requireAuth, wrapAsync(async (req, res) => {
-    const profiles = await storage.getHealthProfilesByUser(req.user!.id);
-    if (!profiles || profiles.length === 0) {
-      throw new NotFoundError("Health profile not found");
+    try {
+      const profiles = await storage.getHealthProfilesByUser(req.user!.id);
+      if (!profiles || profiles.length === 0) {
+        // Return null instead of 404 to indicate no profile exists yet
+        return sendSuccess(res, null);
+      }
+      // Return the first (and should be only) profile for the user
+      sendSuccess(res, profiles[0]);
+    } catch (error) {
+      console.error('Error fetching health profile:', error);
+      // Return null on error to allow user to create a new profile
+      sendSuccess(res, null);
     }
-    // Return the first (and should be only) profile for the user
-    sendSuccess(res, profiles[0]);
   }));
 
   app.get("/api/health-profile/:id", requireAuth, async (req, res) => {

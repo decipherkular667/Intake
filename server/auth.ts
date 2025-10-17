@@ -14,9 +14,9 @@ function toUser(dbUser: Omit<DatabaseUser, 'password'>): User {
     lastName: dbUser.lastName,
     emailVerified: dbUser.emailVerified ?? false,
     isActive: dbUser.isActive ?? true,
-    lastLoginAt: dbUser.lastLoginAt,
-    createdAt: dbUser.createdAt,
-    updatedAt: dbUser.updatedAt,
+    lastLoginAt: dbUser.lastLoginAt ? (dbUser.lastLoginAt instanceof Date ? dbUser.lastLoginAt.toISOString() : dbUser.lastLoginAt) : null,
+    createdAt: dbUser.createdAt ? (dbUser.createdAt instanceof Date ? dbUser.createdAt.toISOString() : dbUser.createdAt) : null,
+    updatedAt: dbUser.updatedAt ? (dbUser.updatedAt instanceof Date ? dbUser.updatedAt.toISOString() : dbUser.updatedAt) : null,
   };
 }
 
@@ -49,7 +49,7 @@ passport.use(new LocalStrategy(
 
       // Update last login time
       await db.update(users)
-        .set({ lastLoginAt: new Date().toISOString() })
+        .set({ lastLoginAt: new Date() })
         .where(eq(users.id, user.id));
 
       // Return user without password

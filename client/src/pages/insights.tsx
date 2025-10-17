@@ -676,13 +676,20 @@ export default function Insights() {
                 {insights?.weeklySummary ? (
                   <>
                     <div className="mb-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-medium text-gray-700">{t('weeklyAverages')}</h4>
-                        {insights.weeklySummary.startDate && insights.weeklySummary.endDate && (
-                          <span className="text-sm font-semibold text-gray-600">
-                            {new Date(insights.weeklySummary.startDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })} - {new Date(insights.weeklySummary.endDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })}
-                          </span>
-                        )}
+                      <div className="mb-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-gray-700">{t('weeklyAverages')}</h4>
+                          {insights.weeklySummary.startDate && insights.weeklySummary.endDate && (
+                            <span className="text-sm font-semibold text-gray-600">
+                              {new Date(insights.weeklySummary.startDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })} - {new Date(insights.weeklySummary.endDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {language === 'zh'
+                            ? `每日平均 (基于${insights.weeklySummary.daysTracked}天记录)`
+                            : `Daily average (based on ${insights.weeklySummary.daysTracked} days tracked)`}
+                        </p>
                       </div>
                       {(() => {
                         const weeklyTargets = {

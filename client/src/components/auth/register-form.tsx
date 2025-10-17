@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
 
 interface RegisterFormProps {
   onSuccess?: () => void;
@@ -19,6 +20,7 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register: registerUser, isLoading, error } = useAuth();
+  const { t } = useLanguage();
 
   const {
     register,
@@ -64,9 +66,9 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">{t('createAccount')}</CardTitle>
         <CardDescription className="text-center">
-          Enter your information to create a new account
+          {t('createAccountDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -80,10 +82,10 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">{t('firstName')}</Label>
               <Input
                 id="firstName"
-                placeholder="First name"
+                placeholder={t('firstName')}
                 {...register("firstName")}
                 disabled={isSubmitting || isLoading}
                 className={errors.firstName ? "border-red-500" : ""}
@@ -94,10 +96,10 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">{t('lastName')}</Label>
               <Input
                 id="lastName"
-                placeholder="Last name"
+                placeholder={t('lastName')}
                 {...register("lastName")}
                 disabled={isSubmitting || isLoading}
                 className={errors.lastName ? "border-red-500" : ""}
@@ -109,11 +111,11 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('email')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('enterYourEmail')}
               {...register("email")}
               disabled={isSubmitting || isLoading}
               className={errors.email ? "border-red-500" : ""}
@@ -124,12 +126,12 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('password')}</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Create a password"
+                placeholder={t('createPassword')}
                 {...register("password")}
                 disabled={isSubmitting || isLoading}
                 className={errors.password ? "border-red-500 pr-10" : "pr-10"}
@@ -170,9 +172,9 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
                   ))}
                 </div>
                 <p className="text-xs text-gray-600">
-                  {passwordStrength <= 2 && "Weak"}
-                  {passwordStrength === 3 && "Medium"}
-                  {passwordStrength >= 4 && "Strong"}
+                  {passwordStrength <= 2 && t('weak')}
+                  {passwordStrength === 3 && t('medium')}
+                  {passwordStrength >= 4 && t('strong')}
                 </p>
               </div>
             )}
@@ -183,12 +185,12 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm your password"
+                placeholder={t('confirmYourPassword')}
                 {...register("confirmPassword")}
                 disabled={isSubmitting || isLoading}
                 className={errors.confirmPassword ? "border-red-500 pr-10" : "pr-10"}
@@ -221,10 +223,10 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
             {isSubmitting || isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
+                {t('creatingAccount')}
               </>
             ) : (
-              "Create Account"
+              t('createAccount')
             )}
           </Button>
 
@@ -236,7 +238,7 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
               onClick={onLoginClick}
               disabled={isSubmitting || isLoading}
             >
-              Already have an account? Sign in
+              {t('alreadyHaveAccountSignIn')}
             </Button>
           </div>
         </form>

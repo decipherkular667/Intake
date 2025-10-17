@@ -38,6 +38,14 @@ const translations = {
     enterYourPassword: "Enter your password",
     signingIn: "Signing in...",
     dontHaveAccountSignUp: "Don't have an account? Sign up",
+    createAccountDescription: "Enter your information to create a new account",
+    createPassword: "Create a password",
+    confirmYourPassword: "Confirm your password",
+    creatingAccount: "Creating account...",
+    alreadyHaveAccountSignIn: "Already have an account? Sign in",
+    weak: "Weak",
+    medium: "Medium",
+    strong: "Strong",
 
     // Dashboard
     welcomeBack: "Welcome back",
@@ -278,6 +286,14 @@ const translations = {
     enterYourPassword: "请输入您的密码",
     signingIn: "登录中...",
     dontHaveAccountSignUp: "还没有账户？立即注册",
+    createAccountDescription: "输入您的信息来创建新账户",
+    createPassword: "创建密码",
+    confirmYourPassword: "确认您的密码",
+    creatingAccount: "创建账户中...",
+    alreadyHaveAccountSignIn: "已有账户？立即登录",
+    weak: "弱",
+    medium: "中等",
+    strong: "强",
 
     // Dashboard
     welcomeBack: "欢迎回来",

@@ -59,8 +59,11 @@ export async function apiRequest(
     }
 
     const controller = new AbortController();
-    // Use longer timeout for insights API (45s) due to AI processing time with fallback calls
-    const timeout = url.includes('/api/insights') ? 45000 : 30000;
+    // Use longer timeout for insights API (60s) due to AI processing time with fallback calls
+    // Auth endpoints get 45s timeout to handle Render free tier cold starts (can take 30s)
+    const timeout = url.includes('/api/insights')
+      ? 60000
+      : (url.includes('/api/auth') ? 45000 : 35000);
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     const res = await fetch(finalUrl, {

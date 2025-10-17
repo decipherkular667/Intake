@@ -462,6 +462,25 @@ export const nutrientData = {
       "unit": "mg",
       "dailyValue": 16
     },
+    "Niacin": {
+      "name": "Niacin",
+      "description": "B vitamin (also known as Vitamin B3) that helps convert food into energy and supports nervous system function.",
+      "benefits": [
+        "Helps convert food to energy",
+        "Supports nervous system",
+        "Maintains healthy skin",
+        "May support cholesterol levels"
+      ],
+      "sources": [
+        "Meat",
+        "Fish",
+        "Nuts",
+        "Enriched grains",
+        "Legumes"
+      ],
+      "unit": "mg",
+      "dailyValue": 16
+    },
     "Thiamin": {
       "name": "Thiamin",
       "description": "B vitamin essential for energy metabolism and proper nerve, muscle, and heart function.",
@@ -1038,6 +1057,25 @@ export const nutrientData = {
     "Vitamin B3": {
       "name": "维生素B3",
       "description": "B族维生素（也称为烟酸），有助于将食物转化为能量并支持神经系统功能。",
+      "benefits": [
+        "帮助将食物转化为能量",
+        "支持神经系统",
+        "保持皮肤健康",
+        "可能支持胆固醇水平"
+      ],
+      "sources": [
+        "肉类",
+        "鱼类",
+        "坚果",
+        "强化谷物",
+        "豆类"
+      ],
+      "unit": "毫克",
+      "dailyValue": 16
+    },
+    "Niacin": {
+      "name": "烟酸",
+      "description": "B族维生素（也称为维生素B3），有助于将食物转化为能量并支持神经系统功能。",
       "benefits": [
         "帮助将食物转化为能量",
         "支持神经系统",

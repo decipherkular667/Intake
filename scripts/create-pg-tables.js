@@ -72,15 +72,20 @@ CREATE TABLE IF NOT EXISTS insights (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Rate limits table
-CREATE TABLE IF NOT EXISTS rate_limits (
-  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-  user_id TEXT NOT NULL,
-  endpoint TEXT NOT NULL,
-  count INTEGER DEFAULT 0,
-  reset_at TIMESTAMP NOT NULL,
+-- Rate limits table (new schema with per-minute/hour/day tracking)
+DROP TABLE IF EXISTS rate_limits CASCADE;
+CREATE TABLE rate_limits (
+  user_id TEXT PRIMARY KEY NOT NULL,
+  minute_count INTEGER DEFAULT 0,
+  minute_reset_at BIGINT NOT NULL,
+  hour_count INTEGER DEFAULT 0,
+  hour_reset_at BIGINT NOT NULL,
+  day_count INTEGER DEFAULT 0,
+  day_reset_at BIGINT NOT NULL,
+  total_requests INTEGER DEFAULT 0,
+  last_request_at BIGINT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(user_id, endpoint)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Session table (for connect-pg-simple)

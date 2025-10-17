@@ -61,15 +61,15 @@ export const insights = pgTable("insights", {
 });
 
 export const rateLimits = pgTable("rate_limits", {
-  userId: uuid("user_id").primaryKey().references(() => users.id).notNull(),
+  userId: text("user_id").primaryKey().notNull(),
   minuteCount: integer("minute_count").notNull().default(0),
-  minuteResetAt: integer("minute_reset_at").notNull(), // Unix timestamp in milliseconds
+  minuteResetAt: integer("minute_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
   hourCount: integer("hour_count").notNull().default(0),
-  hourResetAt: integer("hour_reset_at").notNull(), // Unix timestamp in milliseconds
+  hourResetAt: integer("hour_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
   dayCount: integer("day_count").notNull().default(0),
-  dayResetAt: integer("day_reset_at").notNull(), // Unix timestamp in milliseconds
+  dayResetAt: integer("day_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
   totalRequests: integer("total_requests").notNull().default(0), // Lifetime total
-  lastRequestAt: integer("last_request_at"), // Unix timestamp in milliseconds
+  lastRequestAt: integer("last_request_at"), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

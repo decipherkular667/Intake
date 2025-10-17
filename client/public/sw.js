@@ -1,7 +1,7 @@
 // Service Worker for IntakeAI Health PWA
-// Version: 2025-10-16-v5-force - Force service worker update
-const CACHE_NAME = 'intakeai-health-v5';
-const RUNTIME_CACHE = 'intakeai-runtime-v5';
+// Version: 2025-10-18-v6-debug - Add API error logging
+const CACHE_NAME = 'intakeai-health-v6';
+const RUNTIME_CACHE = 'intakeai-runtime-v6';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
@@ -11,7 +11,7 @@ const PRECACHE_URLS = [
 
 // Install event - cache essential assets and force update
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing v5 - forcing update...');
+  console.log('[Service Worker] Installing v6 - debug API errors...');
   // Skip waiting immediately to force activation
   self.skipWaiting();
 
@@ -59,6 +59,13 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request)
         .catch((error) => {
+          console.error('[Service Worker] API fetch failed:', {
+            url: event.request.url,
+            method: event.request.method,
+            error: error.message,
+            online: navigator.onLine
+          });
+
           // Only return offline message if truly offline (not just a network error)
           // Check if the browser is actually offline
           if (!navigator.onLine) {

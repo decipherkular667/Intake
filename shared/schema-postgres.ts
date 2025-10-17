@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, integer, real, timestamp, boolean, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, real, timestamp, boolean, uuid, bigint } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -63,13 +63,13 @@ export const insights = pgTable("insights", {
 export const rateLimits = pgTable("rate_limits", {
   userId: text("user_id").primaryKey().notNull(),
   minuteCount: integer("minute_count").notNull().default(0),
-  minuteResetAt: integer("minute_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
+  minuteResetAt: bigint("minute_reset_at", { mode: "number" }).notNull(), // Unix timestamp in milliseconds
   hourCount: integer("hour_count").notNull().default(0),
-  hourResetAt: integer("hour_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
+  hourResetAt: bigint("hour_reset_at", { mode: "number" }).notNull(), // Unix timestamp in milliseconds
   dayCount: integer("day_count").notNull().default(0),
-  dayResetAt: integer("day_reset_at").notNull(), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
+  dayResetAt: bigint("day_reset_at", { mode: "number" }).notNull(), // Unix timestamp in milliseconds
   totalRequests: integer("total_requests").notNull().default(0), // Lifetime total
-  lastRequestAt: integer("last_request_at"), // Unix timestamp in milliseconds (stored as BIGINT in SQL)
+  lastRequestAt: bigint("last_request_at", { mode: "number" }), // Unix timestamp in milliseconds
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

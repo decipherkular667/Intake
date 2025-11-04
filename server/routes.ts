@@ -158,7 +158,7 @@ async function callAIWithFallback(
       const response = await new Promise<string>((resolve, reject) => {
         const options = {
           hostname: 'generativelanguage.googleapis.com',
-          path: `/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_GEMINI_API_KEY2}`,
+          path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_GEMINI_API_KEY}`,
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ async function callAIWithFallback(
         const response = await new Promise<string>((resolve, reject) => {
           const options = {
             hostname: 'generativelanguage.googleapis.com',
-            path: `/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_GEMINI_API_KEY}`,
+            path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_GEMINI_API_KEY}`,
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -370,32 +370,32 @@ async function callAIWithFallback(
     //     console.error('❌ OpenAI also failed:', openaiError);
     //   }
     // }
-    //
-    // // Detect quota exhaustion for OpenAI
-    // if (error?.status === 429 && error?.code === 'insufficient_quota') {
-    //   openAIQuotaExhausted = true;
-    //   aiClient = null;
-    //   console.error('❌ OpenAI quota exhausted');
-    // }
-    //
-    // // Final fallback to Llama
-    // if ((useGemini || useOpenAI) && process.env.HF_TOKEN) {
-    //   try {
-    //     console.log('🔄 Retrying with Llama...');
-    //     const client = getAIClient();
-    //     const completion = await client.chat.completions.create({
-    //       model: "meta-llama/Llama-3.2-3B-Instruct:novita",
-    //       messages: messages as any,
-    //       max_tokens: maxTokens,
-    //       temperature: temperature,
-    //     });
-    //     const response = completion.choices[0].message.content;
-    //     console.log('✅ Llama AI Response received');
-    //     return response;
-    //   } catch (llamaError) {
-    //     console.error('❌ Llama also failed:', llamaError);
-    //   }
-    // }
+
+    // Detect quota exhaustion for OpenAI
+    if (error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('quota')) {
+      openAIQuotaExhausted = true;
+      aiClient = null;
+      console.error('❌ OpenAI quota exhausted, switching to Llama');
+    }
+
+    // Final fallback to Llama
+    if ((useGemini || useOpenAI) && process.env.HF_TOKEN) {
+      try {
+        console.log('🔄 Retrying with Llama...');
+        const client = getAIClient();
+        const completion = await client.chat.completions.create({
+          model: "meta-llama/Llama-3.2-3B-Instruct:novita",
+          messages: messages as any,
+          max_tokens: maxTokens,
+          temperature: temperature,
+        });
+        const response = completion.choices[0].message.content;
+        console.log('✅ Llama AI Response received');
+        return response;
+      } catch (llamaError) {
+        console.error('❌ Llama also failed:', llamaError);
+      }
+    }
 
     // No fallback - throw the error
     throw error;

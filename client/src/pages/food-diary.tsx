@@ -6,8 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle, Search, Utensils, Info, Trash2, ChevronDown, ChevronUp, Brain, AlertCircle } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { PlusCircle, Search, Utensils, Info, Trash2, ChevronDown, ChevronUp, Brain, AlertCircle, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Target, TrendingUp } from "lucide-react";
 import { useFoodDiary } from "@/hooks/use-food-diary";
+import { useInsights } from "@/hooks/use-insights";
+import { useHealthProfile } from "@/hooks/use-health-profile";
+import { useSectionInsights } from "@/hooks/use-insights-section";
 import { useToast } from "@/hooks/use-toast";
 import NutrientInfoModal from "@/components/modals/nutrient-info-modal";
 import { formatNumber, formatWithUnit } from "@/lib/format-number";
@@ -60,7 +65,13 @@ export default function FoodDiary() {
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const [, setLocation] = useLocation();
-  const { foodEntries, addFoodEntry, deleteFoodEntry, searchFood, getNutrition, isLoading } = useFoodDiary();
+
+  // Date selection state
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
+  const dateString = selectedDate.toISOString().split('T')[0];
+
+  // All state declarations
   const [searchResults, setSearchResults] = useState<FoodSearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodSearchResult | null>(null);
@@ -69,6 +80,22 @@ export default function FoodDiary() {
   const [selectedNutrient, setSelectedNutrient] = useState("");
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
   const [collapsedMeals, setCollapsedMeals] = useState<Set<string>>(new Set());
+  const [expandedSummary, setExpandedSummary] = useState<Set<string>>(new Set());
+
+  // Get food entries for selected date
+  const { foodEntries, addFoodEntry, deleteFoodEntry, searchFood, getNutrition, isLoading } = useFoodDiary(dateString);
+
+  // Get insights data (including daily totals and weekly summary)
+  const { profile } = useHealthProfile();
+  const { insights } = useInsights(profile?.id, dateString);
+
+  // Get weekly analysis section
+  const weeklyQuery = useSectionInsights({
+    profileId: profile?.id,
+    date: dateString,
+    section: 'weekly',
+    enabled: expandedSummary.has('weeklyanalysis')
+  });
 
   const translateNutrient = (nutrientName: string) => {
     // First map the nutrient key to the proper display name
@@ -130,6 +157,22 @@ export default function FoodDiary() {
       mealType: "breakfast",
     },
   });
+
+  // Reset expanded states when date changes
+  useEffect(() => {
+    setExpandedSummary(new Set());
+    setCollapsedMeals(new Set());
+    setExpandedEntries(new Set());
+  }, [dateString]);
+
+  // Format weekly analysis text with spacing between numbered points
+  const formatWeeklyAnalysis = (text: string) => {
+    if (!text) return '';
+    // Remove common prefixes like "Insights:", "Weekly Insights:", etc.
+    let formatted = text.replace(/^(Weekly\s+)?Insights?:\s*/i, '').trim();
+    // Add single line breaks before numbered points (1., 2., 3., etc.) for better readability
+    return formatted.replace(/(\d+\.)/g, '\n$1');
+  };
 
   // Real-time search as user types
   useEffect(() => {
@@ -360,20 +403,38 @@ export default function FoodDiary() {
     });
   };
 
-  // Handler for analyzing health insights
-  const handleAnalyzeHealth = () => {
-    if (foodEntries.length === 0) {
-      toast({
-        title: language === 'zh' ? '请先添加食物记录' : 'Please add food entries first',
-        description: language === 'zh'
-          ? '您需要先添加今天的饮食记录才能查看健康分析'
-          : 'You need to add your food entries before viewing health insights',
-        variant: 'destructive',
-      });
-      return;
-    }
-    setLocation('/insights');
+  const toggleSummarySection = (section: string) => {
+    setExpandedSummary(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(section)) {
+        newSet.delete(section);
+      } else {
+        newSet.add(section);
+      }
+      return newSet;
+    });
   };
+
+  // Date navigation handlers
+  const goToPreviousDay = () => {
+    const prevDay = new Date(selectedDate);
+    prevDay.setDate(prevDay.getDate() - 1);
+    setSelectedDate(prevDay);
+  };
+
+  const goToNextDay = () => {
+    const nextDay = new Date(selectedDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    setSelectedDate(nextDay);
+  };
+
+  const goToToday = () => {
+    setSelectedDate(new Date());
+  };
+
+  const isToday = dateString === new Date().toISOString().split('T')[0];
+  const isFuture = selectedDate > new Date();
+
 
   // Calculate daily totals - fix floating point precision issues
   const dailyTotals = (() => {
@@ -408,9 +469,83 @@ export default function FoodDiary() {
 
   return (
     <div className="space-y-6">
+      {/* Date Navigation */}
+      <div className="px-4 mt-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToPreviousDay}
+                className="flex items-center gap-1"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">{language === 'zh' ? '前一天' : 'Previous'}</span>
+              </Button>
+
+              <div className="flex items-center gap-2">
+                <Popover open={showCalendar} onOpenChange={setShowCalendar}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <CalendarIcon className="w-4 h-4" />
+                      <span className="font-medium">
+                        {selectedDate.toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="center">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDate(date);
+                          setShowCalendar(false);
+                        }
+                      }}
+                      disabled={(date) => date > new Date()}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {!isToday && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={goToToday}
+                    className="text-primary-custom"
+                  >
+                    {language === 'zh' ? '今天' : 'Today'}
+                  </Button>
+                )}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToNextDay}
+                disabled={isFuture}
+                className="flex items-center gap-1"
+              >
+                <span className="hidden sm:inline">{language === 'zh' ? '后一天' : 'Next'}</span>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Quick Stats */}
-      <div className="bg-gradient-to-r from-secondary-custom to-blue-600 text-white p-6 mx-4 mt-4 rounded-xl">
-        <h2 className="text-xl font-semibold mb-2">{t('todaysNutrition')}</h2>
+      <div className="bg-gradient-to-r from-secondary-custom to-blue-600 text-white p-6 mx-4 rounded-xl">
+        <h2 className="text-xl font-semibold mb-2">
+          {isToday ? t('todaysNutrition') : (language === 'zh' ? '当日营养' : 'Daily Nutrition')}
+        </h2>
         <div className="grid grid-cols-3 gap-4 mt-4">
           <div className="text-center">
             <div className="text-2xl font-bold" data-testid="daily-calories">{formatNumber(dailyTotals.calories, 0)}{t('cal')}</div>
@@ -425,19 +560,6 @@ export default function FoodDiary() {
             <div className="text-blue-100 text-sm">{t('carbs')}</div>
           </div>
         </div>
-      </div>
-
-      {/* Analyze Health Button */}
-      <div className="px-4">
-        <Button
-          onClick={handleAnalyzeHealth}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-6 rounded-xl shadow-lg flex items-center justify-center gap-2"
-        >
-          <Brain className="w-5 h-5" />
-          <span className="text-base">
-            {language === 'zh' ? '分析您的饮食健康' : 'Analyze Your Dietary Health'}
-          </span>
-        </Button>
       </div>
 
       <div className="px-4 space-y-6">
@@ -774,6 +896,243 @@ export default function FoodDiary() {
               <Utensils className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noFoodEntries')}</h3>
               <p className="text-gray-500">{t('startTrackingNutrition')}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Today's Nutrition Progress - Only show if there are food entries */}
+        {foodEntries.length > 0 && insights?.dailyTotals && (
+          <Card>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Target className="text-blue-600 mr-2" />
+                  {isToday ? t('todaysNutritionProgress') : (language === 'zh' ? '当日营养进度' : 'Daily Nutrition Progress')}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-custom px-2 py-1 h-auto flex items-center gap-1"
+                  onClick={() => toggleSummarySection('dailynutrition')}
+                >
+                  <span className="text-xs">{expandedSummary.has('dailynutrition') ? t('collapse') : t('expand')}</span>
+                  {expandedSummary.has('dailynutrition') ? (
+                    <ChevronUp className="w-3 h-3" />
+                  ) : (
+                    <ChevronDown className="w-3 h-3" />
+                  )}
+                </Button>
+              </div>
+
+              {expandedSummary.has('dailynutrition') && (() => {
+                const dailyTotals = insights.dailyTotals;
+                const targets = {
+                  calories: 2000,
+                  protein: 60,
+                  carbs: 250,
+                  fat: 65,
+                  fiber: 25
+                };
+
+                const progress = [
+                  { name: t('calories'), current: dailyTotals.calories, target: targets.calories, unit: t('cal') },
+                  { name: t('protein'), current: dailyTotals.protein, target: targets.protein, unit: language === 'zh' ? '克' : 'g' },
+                  { name: t('carbs'), current: dailyTotals.carbs, target: targets.carbs, unit: language === 'zh' ? '克' : 'g' },
+                  { name: t('fat'), current: dailyTotals.fat, target: targets.fat, unit: language === 'zh' ? '克' : 'g' },
+                  { name: t('fiber'), current: dailyTotals.fiber, target: targets.fiber, unit: language === 'zh' ? '克' : 'g' }
+                ];
+
+                return (
+                  <div className="space-y-4">
+                    {progress.map((item) => {
+                      const percentage = Math.min(100, (item.current / item.target) * 100);
+                      const color = percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-400';
+                      const bgColor = percentage >= 80 ? 'bg-green-50' : percentage >= 50 ? 'bg-yellow-50' : 'bg-red-50';
+                      const textColor = percentage >= 80 ? 'text-green-700' : percentage >= 50 ? 'text-yellow-700' : 'text-red-700';
+
+                      return (
+                        <div key={item.name} className={`p-4 rounded-lg ${bgColor}`}>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className={`font-medium ${textColor} capitalize`}>{item.name}</span>
+                            <span className={`text-sm ${textColor}`}>
+                              {formatNumber(item.current, 0)} / {formatNumber(item.target, 0)}{item.unit}
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full ${color} transition-all duration-300`}
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                          <div className={`text-xs ${textColor} mt-1`}>
+                            {formatNumber(percentage, 0)}% {t('ofDailyGoal')}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Weekly Summary - Only show if there are weekly insights */}
+        {insights?.weeklySummary && (
+          <Card>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <TrendingUp className="text-blue-600 mr-2" />
+                  {t("weeklySummary")}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-custom px-2 py-1 h-auto flex items-center gap-1"
+                  onClick={() => toggleSummarySection('weeklysummary')}
+                >
+                  <span className="text-xs">{expandedSummary.has('weeklysummary') ? t('collapse') : t('expand')}</span>
+                  {expandedSummary.has('weeklysummary') ? (
+                    <ChevronUp className="w-3 h-3" />
+                  ) : (
+                    <ChevronDown className="w-3 h-3" />
+                  )}
+                </Button>
+              </div>
+
+              {expandedSummary.has('weeklysummary') && (
+                <>
+                  <div className="mb-6">
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium text-gray-700">{t('weeklyAverages')}</h4>
+                        {insights.weeklySummary.startDate && insights.weeklySummary.endDate && (
+                          <span className="text-sm font-semibold text-gray-600">
+                            {new Date(insights.weeklySummary.startDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })} - {new Date(insights.weeklySummary.endDate).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {language === 'zh'
+                          ? `每日平均 (基于${insights.weeklySummary.daysTracked}天记录)`
+                          : `Daily average (based on ${insights.weeklySummary.daysTracked} days tracked)`}
+                      </p>
+                    </div>
+                    {(() => {
+                      const weeklyTargets = { calories: 2000, protein: 60, carbs: 250, fat: 65, fiber: 25 };
+                      const weeklyData = [
+                        { name: t('calories'), current: insights.weeklySummary.calories, target: weeklyTargets.calories, unit: t('cal') },
+                        { name: t('protein'), current: insights.weeklySummary.protein, target: weeklyTargets.protein, unit: t('g') },
+                        { name: t('carbs'), current: insights.weeklySummary.carbs, target: weeklyTargets.carbs, unit: t('g') },
+                        { name: t('fat'), current: insights.weeklySummary.fat, target: weeklyTargets.fat, unit: t('g') },
+                        { name: t('fiber'), current: insights.weeklySummary.fiber, target: weeklyTargets.fiber, unit: t('g') }
+                      ];
+
+                      return (
+                        <div className="space-y-3">
+                          {weeklyData.map((item) => {
+                            const percentage = Math.min(100, (item.current / item.target) * 100);
+                            const color = percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-400';
+                            const bgColor = percentage >= 80 ? 'bg-green-50' : percentage >= 50 ? 'bg-yellow-50' : 'bg-red-50';
+                            const textColor = percentage >= 80 ? 'text-green-700' : percentage >= 50 ? 'text-yellow-700' : 'text-red-700';
+
+                            return (
+                              <div key={item.name} className={`p-3 rounded-lg ${bgColor}`}>
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className={`font-medium ${textColor}`}>{item.name}</span>
+                                  <span className={`text-sm ${textColor}`}>
+                                    {formatNumber(item.current, 0)} / {formatNumber(item.target, 0)}{item.unit}
+                                  </span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                  <div
+                                    className={`h-2 rounded-full ${color} transition-all duration-500`}
+                                    style={{ width: `${percentage}%` }}
+                                  ></div>
+                                </div>
+                                <div className={`text-xs ${textColor} mt-1`}>
+                                  {formatNumber(percentage, 0)}% {t('ofRecommendedIntake')}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-indigo-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-indigo-700">{insights.weeklySummary.variety}/10</div>
+                      <div className="text-sm text-indigo-600">{t('foodVarietyScore')}</div>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-green-700">{insights.weeklySummary.daysTracked}</div>
+                      <div className="text-sm text-green-600">{t('daysTracked')}</div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Weekly Analysis - Only show if there are weekly insights */}
+        {insights?.weeklySummary && (
+          <Card>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Brain className="text-blue-600 mr-2" />
+                  {language === 'zh' ? '周分析' : 'Weekly Analysis'}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-custom px-2 py-1 h-auto flex items-center gap-1"
+                  onClick={() => toggleSummarySection('weeklyanalysis')}
+                >
+                  <span className="text-xs">{expandedSummary.has('weeklyanalysis') ? t('collapse') : t('expand')}</span>
+                  {expandedSummary.has('weeklyanalysis') ? (
+                    <ChevronUp className="w-3 h-3" />
+                  ) : (
+                    <ChevronDown className="w-3 h-3" />
+                  )}
+                </Button>
+              </div>
+
+              {expandedSummary.has('weeklyanalysis') && (
+                <>
+                  {weeklyQuery.isLoading ? (
+                    <div className="flex items-center justify-center p-6">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                    </div>
+                  ) : weeklyQuery.isError ? (
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200 mt-3">
+                      <p className="text-red-800 text-sm mb-3">
+                        {language === 'zh' ? '生成周分析失败，请稍后再试。' : 'Failed to generate weekly analysis. Please try again later.'}
+                      </p>
+                      <Button
+                        onClick={() => weeklyQuery.refetch()}
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-300 hover:bg-red-100"
+                      >
+                        {language === 'zh' ? '重试' : 'Retry'}
+                      </Button>
+                    </div>
+                  ) : weeklyQuery.data ? (
+                    <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 mt-3">
+                      <h5 className="font-medium text-purple-800 mb-2 flex items-center">
+                        <Brain className="w-4 h-4 mr-1" />
+                        {language === 'zh' ? '周分析' : 'Weekly Analysis'}
+                      </h5>
+                      <p className="text-purple-700 text-sm whitespace-pre-line">{formatWeeklyAnalysis(weeklyQuery.data)}</p>
+                    </div>
+                  ) : null}
+                </>
+              )}
             </CardContent>
           </Card>
         )}

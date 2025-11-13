@@ -260,7 +260,7 @@ async function callAIWithFallback(
     // Only execute if NOT using Gemini (fallback to OpenAI or Llama)
     const client = getAIClient();
     const completion = await client.chat.completions.create({
-      model: useOpenAI ? "gpt-3.5-turbo" : "meta-llama/Llama-3.2-3B-Instruct:novita",
+      model: useOpenAI ? "gpt-3.5-turbo" : "meta-llama/Meta-Llama-3-8B-Instruct",
       messages: messages as any,
       response_format: (useOpenAI && jsonMode) ? { type: "json_object" } : undefined,
       max_tokens: maxTokens,
@@ -384,7 +384,7 @@ async function callAIWithFallback(
         console.log('🔄 Retrying with Llama...');
         const client = getAIClient();
         const completion = await client.chat.completions.create({
-          model: "meta-llama/Llama-3.2-3B-Instruct:novita",
+          model: "meta-llama/Meta-Llama-3-8B-Instruct",
           messages: messages as any,
           max_tokens: maxTokens,
           temperature: temperature,
@@ -820,6 +820,225 @@ export function registerRoutes(app: Express) {
   }));
   // Batch Translation Route
   app.post("/api/translate-batch", translateBatch);
+
+  // Food Recommendations Route - AI-powered personalized recommendations
+  app.post("/api/food-recommendations", optionalAuth, wrapAsync(async (req: Request, res: Response) => {
+    try {
+      // Try to get userId from session first, fall back to request body
+      const userId = req.user?.id || req.body.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { cuisine, mealType, language } = req.body;
+
+      console.log("📝 Food Recommendations Request:", {
+        cuisine,
+        mealType,
+        language,
+        languageType: typeof language
+      });
+
+      if (!cuisine || !mealType) {
+        return res.status(400).json({ error: "Cuisine and meal type are required" });
+      }
+
+      // Get user's health profile using storage
+      const profiles = await storage.getHealthProfilesByUser(userId);
+      if (!profiles || profiles.length === 0) {
+        return res.status(404).json({ error: "Health profile not found" });
+      }
+      const profile = profiles[0];
+
+      // Calculate age from birth year
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      let age = currentYear - (profile.birthYear || currentYear);
+      if (profile.birthMonth && currentMonth < profile.birthMonth) {
+        age--;
+      }
+
+      // Get user's recent food entries (last 7 days) to understand dietary patterns
+      const targetDate = new Date();
+      const recentFoods: any[] = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(targetDate);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const dayEntries = await storage.getFoodEntries(profile.id!, dateStr);
+        recentFoods.push(...dayEntries);
+      }
+
+      // Build context for AI - ensure arrays are properly handled
+      const medicalConditions = Array.isArray(profile.medicalConditions) ? profile.medicalConditions : [];
+      const allergies = Array.isArray(profile.allergies) ? profile.allergies : [];
+      const medications = Array.isArray(profile.medications) ? profile.medications : [];
+      const dietaryRestrictions = Array.isArray(profile.dietaryRestrictions) ? profile.dietaryRestrictions : [];
+
+      const dietaryPatterns = recentFoods.map(entry => entry.foodName).slice(0, 20);
+
+      // Always create AI prompt in English for consistency
+      // We'll translate food names to Chinese after generation
+      const prompt = `You are a professional nutritionist. Generate 5 personalized food recommendations for a user based on their health profile and preferences.
+
+User Health Profile:
+- Age: ${age}
+- Gender: ${profile.gender}
+- Medical Conditions: ${medicalConditions.length > 0 ? medicalConditions.join(', ') : 'None'}
+- Allergies: ${allergies.length > 0 ? allergies.join(', ') : 'None'}
+- Medications: ${medications.length > 0 ? medications.join(', ') : 'None'}
+- Dietary Restrictions: ${dietaryRestrictions.length > 0 ? dietaryRestrictions.join(', ') : 'None'}
+
+Recent Foods Consumed:
+${dietaryPatterns.length > 0 ? dietaryPatterns.join(', ') : 'No recent data'}
+
+Request:
+- Cuisine: ${cuisine}
+- Meal Type: ${mealType}
+
+IMPORTANT INSTRUCTIONS:
+1. Generate EXACTLY 5 food recommendations that match the ${cuisine} cuisine and ${mealType} meal type
+2. Take into account the user's health conditions, allergies, and medications when recommending foods
+3. Provide variety - don't repeat the same foods from their recent consumption
+4. Each recommendation should include:
+   - English food name (simple, not too descriptive)
+   - Food category (e.g., "Whole Grains", "Lean Protein", "Vegetables", "Fruits", "Dairy", "Healthy Fats")
+   - Scientific serving amount in grams
+   - Practical serving amount (e.g., "1 medium bowl (240g)", "2 slices (60g)")
+   - Personalized reason why this food is beneficial for THIS specific user based on their health profile
+   - Accurate nutrition values per serving: calories (kcal), protein (g), carbs (g), fat (g), fiber (g), sodium (mg)
+
+Return ONLY valid JSON in this exact format, with no additional text or explanation:
+{
+  "recommendations": [
+    {
+      "name": "Food Name in English",
+      "category": "Food Category",
+      "scientificAmount": 200,
+      "practicalAmount": "1 medium bowl (200g)",
+      "reason": "Specific reason this food benefits this user based on their health profile...",
+      "mealTypes": ["${mealType}"],
+      "nutrition": {
+        "calories": 150,
+        "protein": 8,
+        "carbs": 30,
+        "fat": 2,
+        "fiber": 4,
+        "sodium": 300
+      }
+    }
+  ]
+}`;
+
+      // Call AI using the existing fallback system
+      const aiResponse = await callAIWithFallback(
+        [
+          {
+            role: "system",
+            content: "You are a professional nutritionist providing personalized food recommendations. Always respond with valid JSON only."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        {
+          maxTokens: 2000,
+          temperature: 0.7,
+          jsonMode: true
+        }
+      );
+
+      if (!aiResponse) {
+        throw new Error("No response from AI");
+      }
+
+      // Parse AI response with proper error handling
+      let parsedResponse;
+      try {
+        const cleanedResponse = cleanJSONResponse(aiResponse);
+        parsedResponse = JSON.parse(cleanedResponse);
+      } catch (parseError) {
+        console.error("Failed to parse AI response:", aiResponse.substring(0, 500));
+        throw new Error("Invalid JSON response from AI");
+      }
+
+      if (!parsedResponse.recommendations || !Array.isArray(parsedResponse.recommendations)) {
+        throw new Error("Invalid response format from AI");
+      }
+
+      // Translate all text fields to simplified Chinese
+      // This ensures both languages are always available for all fields
+      try {
+        // Collect all text that needs translation
+        const textsToTranslate: string[] = [];
+        parsedResponse.recommendations.forEach((rec: any) => {
+          textsToTranslate.push(rec.name);              // Food name
+          textsToTranslate.push(rec.category);          // Category
+          textsToTranslate.push(rec.practicalAmount);   // Serving size
+          textsToTranslate.push(rec.reason);            // Recommendation reason
+        });
+
+        console.log("🔤 Translating all fields to simplified Chinese (zh-CN)...");
+        console.log(`📊 Total texts to translate: ${textsToTranslate.length}`);
+
+        const [chineseTranslations] = await translateClient.translate(textsToTranslate, 'zh-CN');
+        const translationsArray = Array.isArray(chineseTranslations) ? chineseTranslations : [chineseTranslations];
+
+        console.log("✅ All translations completed");
+
+        // Add Chinese versions to each recommendation (4 fields per recommendation)
+        parsedResponse.recommendations = parsedResponse.recommendations.map((rec: any, index: number) => {
+          const baseIndex = index * 4;
+          return {
+            ...rec,
+            nameChinese: translationsArray[baseIndex] || rec.name,
+            categoryChinese: translationsArray[baseIndex + 1] || rec.category,
+            practicalAmountChinese: translationsArray[baseIndex + 2] || rec.practicalAmount,
+            reasonChinese: translationsArray[baseIndex + 3] || rec.reason
+          };
+        });
+      } catch (translateError) {
+        console.error("❌ Error translating fields:", translateError);
+        // If translation fails, use English as fallback for all Chinese fields
+        parsedResponse.recommendations = parsedResponse.recommendations.map((rec: any) => ({
+          ...rec,
+          nameChinese: rec.name,
+          categoryChinese: rec.category,
+          practicalAmountChinese: rec.practicalAmount,
+          reasonChinese: rec.reason
+        }));
+      }
+
+      // Add IDs to recommendations
+      const recommendations = parsedResponse.recommendations.map((rec: any, index: number) => ({
+        id: `ai-${Date.now()}-${index}`,
+        ...rec,
+      }));
+
+      // Debug: Log first recommendation to verify Chinese fields are included
+      if (recommendations.length > 0) {
+        console.log("📤 Sending recommendation sample:", {
+          name: recommendations[0].name,
+          nameChinese: recommendations[0].nameChinese,
+          category: recommendations[0].category,
+          categoryChinese: recommendations[0].categoryChinese,
+          practicalAmount: recommendations[0].practicalAmount,
+          practicalAmountChinese: recommendations[0].practicalAmountChinese,
+          reasonPreview: recommendations[0].reason?.substring(0, 50),
+          reasonChinesePreview: recommendations[0].reasonChinese?.substring(0, 50),
+        });
+      }
+
+      return res.json({ recommendations });
+    } catch (error) {
+      console.error("Error generating food recommendations:", error);
+      return res.status(500).json({
+        error: "Failed to generate food recommendations",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  }));
 
   // Get current user's health profile
   app.get("/api/health-profile", requireAuth, wrapAsync(async (req, res) => {
@@ -3001,7 +3220,7 @@ Base your response on established nutritional science. Be accurate and informati
 Respond with ONLY the JSON object, no additional text.`;
 
     const completion = await llamaClient.chat.completions.create({
-      model: "meta-llama/Llama-3.2-3B-Instruct:novita",
+      model: "meta-llama/Meta-Llama-3-8B-Instruct",
       messages: [
         {
           role: "system",

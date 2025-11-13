@@ -1,5 +1,5 @@
 // contexts/language-context.tsx - Enhanced Version
-import { createContext, useContext, useState, ReactNode, useCallback, useRef } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import { nutrientData, type Language, type NutrientDataByLanguage } from "@/data/nutrients-translated";
 
 type LanguageType = 'en' | 'zh';
@@ -64,7 +64,8 @@ const translations = {
     health: "Health",
     diary: "Food Diary",
     insights: "Insights",
-    
+    recommendations: "Recommendations",
+
     healthProfileDescription: "Help us provide personalized nutrition insights",
     profileCompletion: "Profile Completion",
     enterFullName: "Enter your full name",
@@ -312,7 +313,8 @@ const translations = {
     health: "健康",
     diary: "饮食日记",
     insights: "健康洞察",
-    
+    recommendations: "食物推荐",
+
     healthProfileDescription: "帮助我们为您提供个性化营养建议",
     profileCompletion: "档案完成度",
     enterFullName: "请输入您的全名",
@@ -506,131 +508,21 @@ const translations = {
   }
 };
 
-// Translation cache for API results
-interface TranslationCache {
-  [key: string]: string;
-}
-
-class EnhancedTranslationBatcher {
-  private static instance: EnhancedTranslationBatcher;
-  private cache: TranslationCache = {};
-  private pendingTranslations = new Map<string, Array<{
-    resolve: (value: string) => void;
-    reject: (error: Error) => void;
-  }>>();
-  private batchTimeout: NodeJS.Timeout | null = null;
-  private readonly BATCH_DELAY = 100; // ms
-
-  static getInstance() {
-    if (!EnhancedTranslationBatcher.instance) {
-      EnhancedTranslationBatcher.instance = new EnhancedTranslationBatcher();
-    }
-    return EnhancedTranslationBatcher.instance;
-  }
-
-  async translate(text: string, targetLanguage: string): Promise<string> {
-    // Don't translate if target is English or text is empty
-    if (targetLanguage === 'en' || !text.trim()) {
-      return text;
-    }
-
-    const cacheKey = `${text}_${targetLanguage}`;
-    
-    // Return cached translation
-    if (this.cache[cacheKey]) {
-      return this.cache[cacheKey];
-    }
-
-    // Return promise for pending/new translation
-    return new Promise<string>((resolve, reject) => {
-      if (!this.pendingTranslations.has(text)) {
-        this.pendingTranslations.set(text, []);
-      }
-      
-      this.pendingTranslations.get(text)!.push({ resolve, reject });
-      this.scheduleBatch(targetLanguage);
-    });
-  }
-
-  private scheduleBatch(targetLanguage: string) {
-    if (this.batchTimeout) {
-      clearTimeout(this.batchTimeout);
-    }
-
-    this.batchTimeout = setTimeout(() => {
-      this.processBatch(targetLanguage);
-    }, this.BATCH_DELAY);
-  }
-
-  private async processBatch(targetLanguage: string) {
-    const textsToTranslate = Array.from(this.pendingTranslations.keys());
-    if (textsToTranslate.length === 0) return;
-
-    try {
-      // Use your existing Google Translate service
-      const GOOGLE_TRANSLATE_API_KEY = import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY;
-
-      if (!GOOGLE_TRANSLATE_API_KEY) {
-        console.warn('Translation API key not configured, falling back to original text');
-        // Fallback: resolve with original text
-        textsToTranslate.forEach((text) => {
-          const pending = this.pendingTranslations.get(text) || [];
-          pending.forEach(({ resolve }) => resolve(text));
-          this.pendingTranslations.delete(text);
-        });
-        return;
-      }
-
-      const response = await fetch(
-        `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            q: textsToTranslate,
-            target: targetLanguage,
-            source: 'en',
-          }),
-        }
-      );
-
-      const data = await response.json();
-      
-      if (data.data?.translations) {
-        // Process successful translations
-        textsToTranslate.forEach((text, index) => {
-          const translation = data.data.translations[index]?.translatedText || text;
-          const cacheKey = `${text}_${targetLanguage}`;
-          
-          // Cache the translation
-          this.cache[cacheKey] = translation;
-          
-          // Resolve all pending promises for this text
-          const pending = this.pendingTranslations.get(text) || [];
-          pending.forEach(({ resolve }) => resolve(translation));
-          this.pendingTranslations.delete(text);
-        });
-      } else {
-        throw new Error('Invalid translation response');
-      }
-    } catch (error) {
-      console.warn('Batch translation failed:', error);
-      
-      // Fallback: resolve with original text
-      textsToTranslate.forEach((text) => {
-        const pending = this.pendingTranslations.get(text) || [];
-        pending.forEach(({ resolve }) => resolve(text));
-        this.pendingTranslations.delete(text);
-      });
-    }
-  }
-}
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<LanguageType>('en');
-  const translationBatcher = useRef(EnhancedTranslationBatcher.getInstance());
+  const [language, setLanguage] = useState<LanguageType>(() => {
+    // Read from localStorage on initialization
+    const savedLanguage = localStorage.getItem('app-language');
+    return (savedLanguage === 'zh' || savedLanguage === 'en') ? savedLanguage : 'en';
+  });
+
+  // Persist language changes to localStorage
+  const handleSetLanguage = useCallback((lang: LanguageType) => {
+    setLanguage(lang);
+    localStorage.setItem('app-language', lang);
+  }, []);
   
   // Standard translation function - checks local first
   const t = useCallback((key: string, fallback?: string): string => {
@@ -638,24 +530,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return localTranslation || fallback || key;
   }, [language]);
 
-  // Automatic translation for any text - uses API as backup
+  // Automatic translation for any text - uses local translations only
   const translateAuto = useCallback((text: string): string => {
-    // First check if it's a known translation key
+    // Check if it's a known translation key
     const asKey = t(text);
     if (asKey !== text) {
       return asKey;
     }
 
-    // For Chinese, translate via API (async, but component will re-render when ready)
-    if (language === 'zh') {
-      let translatedText = text;
-      translationBatcher.current.translate(text, language).then((result) => {
-        // This will trigger a re-render in components using this
-        translatedText = result;
-      });
-      return translatedText;
-    }
-
+    // Return original text if no translation found
+    // Note: For dynamic content translation, use backend translation API
     return text;
   }, [language, t]);
 
@@ -677,12 +561,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
   
   return (
-    <LanguageContext.Provider value={{ 
-      language, 
-      setLanguage, 
-      t, 
-      translateAuto, 
-      getNutrientInfo 
+    <LanguageContext.Provider value={{
+      language,
+      setLanguage: handleSetLanguage,
+      t,
+      translateAuto,
+      getNutrientInfo
     }}>
       {children}
     </LanguageContext.Provider>
